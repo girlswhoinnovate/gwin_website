@@ -27,13 +27,12 @@ const container: Variants = {
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
 
-  // ── Mouse-parallax for image ──────────────────────────────────────────────
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
   const springX = useSpring(rawX, { stiffness: 45, damping: 22 });
   const springY = useSpring(rawY, { stiffness: 45, damping: 22 });
-  const imgX = useTransform(springX, [-1, 1], [-18, 18]);
-  const imgY = useTransform(springY, [-1, 1], [-12, 12]);
+  const imgX = useTransform(springX, [-1, 1], [-12, 12]);
+  const imgY = useTransform(springY, [-1, 1], [-8, 8]);
 
   function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
     const rect = sectionRef.current?.getBoundingClientRect();
@@ -52,12 +51,12 @@ export default function Hero() {
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative min-h-screen bg-white overflow-hidden"
+      className="relative bg-white overflow-hidden"
     >
       {/* Dot-grid texture */}
       <svg
         aria-hidden
-        className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.06]"
+        className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.05]"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
@@ -68,32 +67,26 @@ export default function Hero() {
         <rect width="100%" height="100%" fill="url(#dots)" />
       </svg>
 
-      {/* Halo top-right — parallax-shifts with mouse */}
+      {/* Halo top-right */}
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute top-0 right-0 w-[600px] h-[700px] rounded-full blur-3xl opacity-25 -translate-y-1/4 translate-x-1/4"
-        style={{ backgroundColor: "#E2BDFF", x: useTransform(springX, [-1, 1], [8, -8]), y: useTransform(springY, [-1, 1], [6, -6]) }}
+        className="pointer-events-none absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-[0.18] -translate-y-1/4 translate-x-1/4"
+        style={{ backgroundColor: "#E2BDFF", x: useTransform(springX, [-1, 1], [6, -6]), y: useTransform(springY, [-1, 1], [4, -4]) }}
       />
 
-      {/* Halo bottom-left — soft counter-accent */}
+      {/* Halo bottom-left */}
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-[0.13] translate-y-1/3 -translate-x-1/4"
+        className="pointer-events-none absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-3xl opacity-[0.12] translate-y-1/3 -translate-x-1/4"
         style={{ backgroundColor: "#E2BDFF" }}
       />
 
-      {/* Halo top-left — very faint third layer */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-1/4 left-0 w-[320px] h-[320px] rounded-full blur-2xl opacity-[0.09]"
-        style={{ backgroundColor: "#E2BDFF" }}
-      />
-
-      <div className="relative z-10 mx-auto max-w-5xl px-6 grid lg:grid-cols-2 gap-8 items-center pt-16 pb-10">
+      {/* Main grid */}
+      <div className="relative z-10 mx-auto max-w-5xl px-6 pt-20 pb-20 grid md:grid-cols-2 gap-10 items-center">
 
         {/* ── Left column — text ── */}
         <motion.div
-          className="flex flex-col items-start gap-4"
+          className="flex flex-col items-start gap-5 text-left"
           variants={container}
           initial="hidden"
           animate="visible"
@@ -112,7 +105,7 @@ export default function Hero() {
           {/* Headline */}
           <motion.h1
             variants={fadeUp}
-            className="text-3xl sm:text-4xl xl:text-5xl font-extrabold leading-[1.1] tracking-tight"
+            className="text-5xl sm:text-6xl font-extrabold leading-[1.08] tracking-tight"
             style={{ color: "#460C61" }}
           >
             Empowering the{" "}
@@ -132,7 +125,7 @@ export default function Hero() {
           {/* Sub-headline */}
           <motion.p
             variants={fadeUp}
-            className="max-w-lg text-base leading-relaxed"
+            className="max-w-md text-base leading-relaxed"
             style={{ color: "#7A4A8A" }}
           >
             Through bootcamps, competitions, and networking, we build the next
@@ -141,17 +134,17 @@ export default function Hero() {
           </motion.p>
 
           {/* CTAs */}
-          <motion.div className="flex flex-col sm:flex-row items-start gap-4" variants={fadeUp}>
+          <motion.div
+            className="flex flex-row flex-wrap justify-start gap-3"
+            variants={fadeUp}
+          >
             <motion.a
               href="https://forms.gle/RWsPnSCAgZmhwQ2f9"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white"
               style={{ backgroundColor: "#460C61" }}
-              initial={{ opacity: 0, x: 100 }}
               animate={{
-                opacity: 1,
-                x: 0,
                 boxShadow: [
                   "0 0 0 0px rgba(70,12,97,0.45)",
                   "0 0 0 10px rgba(70,12,97,0)",
@@ -159,8 +152,6 @@ export default function Hero() {
                 ],
               }}
               transition={{
-                opacity: { duration: 0.55, delay: 0.6 },
-                x: { duration: 0.55, delay: 0.6, type: "spring" as const, stiffness: 80, damping: 16 },
                 boxShadow: { duration: 2.2, repeat: Infinity, repeatDelay: 0.6, delay: 1.4 },
               }}
               whileHover={{ scale: 1.05 }}
@@ -176,9 +167,6 @@ export default function Hero() {
               href="#programs"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold border-2"
               style={{ borderColor: "#E2BDFF", color: "#460C61", backgroundColor: "transparent" }}
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.55, delay: 0.75, type: "spring" as const, stiffness: 80, damping: 16 }}
               whileHover={{ backgroundColor: "#F6EBFF" }}
               whileTap={{ scale: 0.96 }}
             >
@@ -187,30 +175,30 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* ── Right column — parallax photo ── */}
+        {/* ── Right column — photo ── */}
         <motion.div
-          className="relative hidden lg:flex items-center justify-center"
-          initial={{ opacity: 0, x: 60 }}
+          className="relative hidden md:flex items-center justify-center py-6"
+          initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.3, type: "spring" as const, stiffness: 55, damping: 18 }}
+          transition={{ duration: 0.7, delay: 0.3, type: "spring" as const, stiffness: 55, damping: 18 }}
         >
-          {/* Shadow card — shifts opposite direction for depth */}
+          {/* Shadow card */}
           <motion.div
-            className="absolute inset-4 rounded-3xl"
+            className="absolute inset-6 rounded-3xl"
             style={{
               backgroundColor: "#E2BDFF",
-              opacity: 0.4,
+              opacity: 0.35,
               rotate: -2,
-              x: useTransform(springX, [-1, 1], [10, -10]),
-              y: useTransform(springY, [-1, 1], [6, -6]),
+              x: useTransform(springX, [-1, 1], [8, -8]),
+              y: useTransform(springY, [-1, 1], [5, -5]),
             }}
           />
 
-          {/* Photo — floats continuously + follows mouse */}
+          {/* Photo */}
           <motion.div
-            className="relative rounded-3xl overflow-hidden shadow-2xl w-full max-w-sm aspect-[4/5]"
-            style={{ x: imgX, y: imgY, rotate: 2 }}
-            animate={{ y: [0, -10, 0] }}
+            className="relative rounded-3xl overflow-hidden shadow-xl w-full max-w-sm aspect-[3/4]"
+            style={{ x: imgX, y: imgY, rotate: 1.5 }}
+            animate={{ y: [0, -8, 0] }}
             transition={{
               y: { duration: 5, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" },
             }}
@@ -219,52 +207,46 @@ export default function Hero() {
               src="/images/1.svg"
               alt="Girls Who Innovate — students at our entrepreneurship bootcamp"
               fill
-              className="object-cover"
+              className="object-cover object-center"
               unoptimized
               priority
             />
           </motion.div>
 
-          {/* Badge — Girls Impacted — bobs independently */}
+          {/* Badge — Girls Impacted */}
           <motion.div
-            className="absolute bottom-4 left-4 flex items-center gap-3 px-4 py-2.5 rounded-2xl shadow-lg"
+            className="absolute bottom-8 left-2 flex items-center gap-2 px-4 py-2 rounded-2xl shadow-lg"
             style={{ backgroundColor: "#460C61" }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{
-              opacity: 1,
-              y: [0, -7, 0],
-            }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: [0, -6, 0] }}
             transition={{
               opacity: { duration: 0.5, delay: 1.1 },
               y: { duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 1.2, repeatType: "mirror" },
             }}
             whileHover={{ scale: 1.06 }}
           >
-            <span className="text-xl font-extrabold text-white">95+</span>
-            <span className="text-xs font-semibold leading-tight text-white opacity-80 max-w-[70px]">Girls Impacted</span>
+            <span className="text-lg font-extrabold text-white">95+</span>
+            <span className="text-xs font-semibold leading-tight text-white opacity-80">Girls<br />Impacted</span>
           </motion.div>
 
-          {/* Badge — Schools Reached — bobs on different cadence */}
+          {/* Badge — Schools Reached */}
           <motion.div
-            className="absolute top-4 right-4 flex items-center gap-3 px-4 py-2.5 rounded-2xl shadow-lg"
+            className="absolute top-8 right-2 flex items-center gap-2 px-4 py-2 rounded-2xl shadow-lg"
             style={{ backgroundColor: "#F6EBFF", border: "1.5px solid #E2BDFF" }}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{
-              opacity: 1,
-              y: [0, -9, 0],
-            }}
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: [0, -8, 0] }}
             transition={{
               opacity: { duration: 0.5, delay: 1.3 },
               y: { duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 0.6, repeatType: "mirror" },
             }}
             whileHover={{ scale: 1.06 }}
           >
-            <span className="text-xl font-extrabold" style={{ color: "#460C61" }}>43</span>
-            <span className="text-xs font-semibold leading-tight max-w-[70px]" style={{ color: "#7A4A8A" }}>Schools Reached</span>
+            <span className="text-lg font-extrabold" style={{ color: "#460C61" }}>43</span>
+            <span className="text-xs font-semibold leading-tight" style={{ color: "#7A4A8A" }}>Schools<br />Reached</span>
           </motion.div>
         </motion.div>
-      </div>
 
+      </div>
     </section>
   );
 }
