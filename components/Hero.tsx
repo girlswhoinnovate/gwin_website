@@ -89,11 +89,11 @@ export default function Hero() {
         style={{ backgroundColor: "#E2BDFF" }}
       />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-6 min-h-[85vh] grid lg:grid-cols-2 gap-10 items-center pt-20 pb-12">
+      <div className="relative z-10 mx-auto max-w-5xl px-6 grid lg:grid-cols-2 gap-8 items-center pt-16 pb-10">
 
         {/* ── Left column — text ── */}
         <motion.div
-          className="flex flex-col items-start gap-5"
+          className="flex flex-col items-start gap-4"
           variants={container}
           initial="hidden"
           animate="visible"
@@ -112,7 +112,7 @@ export default function Hero() {
           {/* Headline */}
           <motion.h1
             variants={fadeUp}
-            className="text-4xl sm:text-5xl xl:text-6xl font-extrabold leading-[1.07] tracking-tight"
+            className="text-3xl sm:text-4xl xl:text-5xl font-extrabold leading-[1.1] tracking-tight"
             style={{ color: "#460C61" }}
           >
             Empowering the{" "}
@@ -208,7 +208,7 @@ export default function Hero() {
 
           {/* Photo — floats continuously + follows mouse */}
           <motion.div
-            className="relative rounded-3xl overflow-hidden shadow-2xl w-full max-w-md aspect-[4/5]"
+            className="relative rounded-3xl overflow-hidden shadow-2xl w-full max-w-sm aspect-[4/5]"
             style={{ x: imgX, y: imgY, rotate: 2 }}
             animate={{ y: [0, -10, 0] }}
             transition={{
@@ -227,7 +227,7 @@ export default function Hero() {
 
           {/* Badge — Girls Impacted — bobs independently */}
           <motion.div
-            className="absolute -bottom-4 -left-6 flex items-center gap-3 px-5 py-3 rounded-2xl shadow-lg"
+            className="absolute bottom-4 left-4 flex items-center gap-3 px-4 py-2.5 rounded-2xl shadow-lg"
             style={{ backgroundColor: "#460C61" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{
@@ -240,13 +240,13 @@ export default function Hero() {
             }}
             whileHover={{ scale: 1.06 }}
           >
-            <span className="text-2xl font-extrabold text-white">95+</span>
-            <span className="text-xs font-semibold leading-tight text-white opacity-80 max-w-[80px]">Girls Impacted</span>
+            <span className="text-xl font-extrabold text-white">95+</span>
+            <span className="text-xs font-semibold leading-tight text-white opacity-80 max-w-[70px]">Girls Impacted</span>
           </motion.div>
 
           {/* Badge — Schools Reached — bobs on different cadence */}
           <motion.div
-            className="absolute -top-4 -right-6 flex items-center gap-3 px-5 py-3 rounded-2xl shadow-lg"
+            className="absolute top-4 right-4 flex items-center gap-3 px-4 py-2.5 rounded-2xl shadow-lg"
             style={{ backgroundColor: "#F6EBFF", border: "1.5px solid #E2BDFF" }}
             initial={{ opacity: 0, y: -20 }}
             animate={{
@@ -259,8 +259,8 @@ export default function Hero() {
             }}
             whileHover={{ scale: 1.06 }}
           >
-            <span className="text-2xl font-extrabold" style={{ color: "#460C61" }}>43</span>
-            <span className="text-xs font-semibold leading-tight max-w-[80px]" style={{ color: "#7A4A8A" }}>Schools Reached</span>
+            <span className="text-xl font-extrabold" style={{ color: "#460C61" }}>43</span>
+            <span className="text-xs font-semibold leading-tight max-w-[70px]" style={{ color: "#7A4A8A" }}>Schools Reached</span>
           </motion.div>
         </motion.div>
       </div>
