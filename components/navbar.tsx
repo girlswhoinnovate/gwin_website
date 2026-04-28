@@ -35,7 +35,7 @@ export default function Navbar() {
             <img
               src="/gwin-logo.svg"
               alt="Girls Who Innovate"
-              className="h-16 w-auto"
+              className="h-20 w-auto"
             />
           </Link>
 
