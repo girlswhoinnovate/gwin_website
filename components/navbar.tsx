@@ -33,7 +33,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="#" className="flex items-center">
             <img
-              src="/gwin-logo.png"
+              src="/gwin-logo.svg"
               alt="Girls Who Innovate"
               className="h-10 w-auto"
             />
