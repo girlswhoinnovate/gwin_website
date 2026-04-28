@@ -27,7 +27,7 @@ export default function Navbar() {
           scrolled ? "shadow-[0_1px_0_0_rgba(70,12,97,0.1)] py-3" : "py-4"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
 
           {/* Logo */}
           <Link href="#" className="flex items-center">

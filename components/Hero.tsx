@@ -83,7 +83,7 @@ export default function Hero() {
 
       {/* Main grid */}
       <div className="relative z-10 flex-1 flex items-center w-full">
-      <div className="mx-auto max-w-5xl w-full px-6 pt-20 pb-10 grid md:grid-cols-2 gap-10 items-center">
+      <div className="mx-auto max-w-5xl w-full px-6 pt-20 pb-10 grid lg:grid-cols-2 gap-10 items-center">
 
         {/* ── Left column — text ── */}
         <motion.div
@@ -178,7 +178,7 @@ export default function Hero() {
 
         {/* ── Right column — photo ── */}
         <motion.div
-          className="relative hidden md:flex items-center justify-center py-6"
+          className="relative hidden lg:flex items-center justify-center py-6"
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, delay: 0.3, type: "spring" as const, stiffness: 55, damping: 18 }}
@@ -249,6 +249,25 @@ export default function Hero() {
 
       </div>
       </div>
+
+      {/* Scroll hint */}
+      <motion.div
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5"
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.6, duration: 0.6 }}
+      >
+        <span className="text-[10px] font-semibold uppercase tracking-[0.2em]" style={{ color: "#7A4A8A" }}>
+          Scroll
+        </span>
+        <motion.div
+          className="w-px h-10 rounded-full"
+          style={{ backgroundColor: "#E2BDFF" }}
+          animate={{ scaleY: [0.4, 1, 0.4], opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </motion.div>
+
     </section>
   );
 }
