@@ -89,11 +89,11 @@ export default function Hero() {
         style={{ backgroundColor: "#E2BDFF" }}
       />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 min-h-screen grid lg:grid-cols-2 gap-12 items-center pt-24 pb-16">
+      <div className="relative z-10 mx-auto max-w-6xl px-6 min-h-[85vh] grid lg:grid-cols-2 gap-10 items-center pt-20 pb-12">
 
         {/* ── Left column — text ── */}
         <motion.div
-          className="flex flex-col items-start gap-8"
+          className="flex flex-col items-start gap-5"
           variants={container}
           initial="hidden"
           animate="visible"
@@ -112,7 +112,7 @@ export default function Hero() {
           {/* Headline */}
           <motion.h1
             variants={fadeUp}
-            className="text-5xl sm:text-6xl xl:text-7xl font-extrabold leading-[1.07] tracking-tight"
+            className="text-4xl sm:text-5xl xl:text-6xl font-extrabold leading-[1.07] tracking-tight"
             style={{ color: "#460C61" }}
           >
             Empowering the{" "}
@@ -132,7 +132,7 @@ export default function Hero() {
           {/* Sub-headline */}
           <motion.p
             variants={fadeUp}
-            className="max-w-lg text-lg leading-relaxed"
+            className="max-w-lg text-base leading-relaxed"
             style={{ color: "#7A4A8A" }}
           >
             Through bootcamps, competitions, and networking, we build the next
@@ -146,7 +146,7 @@ export default function Hero() {
               href="https://forms.gle/RWsPnSCAgZmhwQ2f9"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold text-white"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white"
               style={{ backgroundColor: "#460C61" }}
               initial={{ opacity: 0, x: 100 }}
               animate={{
@@ -174,7 +174,7 @@ export default function Hero() {
 
             <motion.a
               href="#programs"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold border-2"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold border-2"
               style={{ borderColor: "#E2BDFF", color: "#460C61", backgroundColor: "transparent" }}
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
