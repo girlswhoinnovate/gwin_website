@@ -23,8 +23,8 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? "py-3 shadow-[0_2px_20px_rgba(0,0,0,0.25)]" : "py-4"
+        className={`fixed top-0 left-0 right-0 z-50 h-16 flex items-center transition-all duration-300 ${
+          scrolled ? "shadow-[0_2px_20px_rgba(0,0,0,0.25)]" : ""
         }`}
         style={{ backgroundColor: "#2D0840" }}
       >
@@ -35,7 +35,7 @@ export default function Navbar() {
             <img
               src="/gwin-logo.svg"
               alt="Girls Who Innovate"
-              className="h-20 w-auto"
+              className="h-14 w-auto"
             />
           </Link>
 
