@@ -51,7 +51,7 @@ export default function Hero() {
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative bg-white overflow-hidden"
+      className="relative bg-white overflow-hidden min-h-screen flex flex-col"
     >
       {/* Dot-grid texture */}
       <svg
@@ -82,7 +82,8 @@ export default function Hero() {
       />
 
       {/* Main grid */}
-      <div className="relative z-10 mx-auto max-w-5xl px-6 pt-20 pb-20 grid md:grid-cols-2 gap-10 items-center">
+      <div className="relative z-10 flex-1 flex items-center w-full">
+      <div className="mx-auto max-w-5xl w-full px-6 pt-20 pb-10 grid md:grid-cols-2 gap-10 items-center">
 
         {/* ── Left column — text ── */}
         <motion.div
@@ -246,6 +247,7 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
+      </div>
       </div>
     </section>
   );
