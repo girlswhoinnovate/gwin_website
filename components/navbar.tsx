@@ -28,7 +28,7 @@ export default function Navbar() {
         }`}
         style={{ backgroundColor: "#2D0840" }}
       >
-        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-5xl w-full mx-auto px-6 flex items-center justify-between">
 
           {/* Logo */}
           <Link href="#" className="flex items-center">
