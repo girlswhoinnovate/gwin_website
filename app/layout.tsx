@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   title: "Girls Who Innovate",
   description:
     "Empowering high school and college girls with the skills to become innovators through bootcamps, competitions, and networking.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
