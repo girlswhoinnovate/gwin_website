@@ -23,12 +23,12 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 h-16 flex items-center transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-300 ${
           scrolled ? "shadow-[0_2px_20px_rgba(0,0,0,0.25)]" : ""
         }`}
         style={{ backgroundColor: "#2D0840" }}
       >
-        <div className="max-w-5xl w-full mx-auto px-6 flex items-center justify-between">
+        <div className="h-16 max-w-5xl w-full mx-auto px-6 flex items-center justify-between">
 
           {/* Logo */}
           <Link href="#" className="flex items-center">
