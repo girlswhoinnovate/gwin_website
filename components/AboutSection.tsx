@@ -151,11 +151,11 @@ export default function AboutSection() {
               </p>
               <p className="text-base leading-relaxed mb-3" style={{ color: "#1E293B", opacity: 0.75 }}>
                 Girls Who Innovate (GWIN) was founded to address a critical gap: the lack of accessible
-                and empowering entrepreneurship resources for girls and young women aged 14 to 22. We
+                and empowering entrepreneurship resources for young women. We
                 believe that innovation has no age limit, and confidence should never be a barrier.
               </p>
               <p className="text-base leading-relaxed" style={{ color: "#1E293B", opacity: 0.75 }}>
-                Too often, young girls with brilliant ideas are held back by self-doubt, limited
+                Too often, girls with brilliant ideas are held back by self-doubt, limited
                 opportunities, and a lack of mentorship. GWIN is here to change that — providing the
                 tools, community, and support they need to turn vision into action, and ideas into
                 impact.

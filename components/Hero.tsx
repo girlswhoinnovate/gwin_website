@@ -136,7 +136,7 @@ export default function Hero() {
             style={{ color: "#7A4A8A" }}
           >
             Through bootcamps, competitions, and networking, we build the next
-            generation of female entrepreneurs — giving girls aged 14–22 the
+            generation of female entrepreneurs — giving girls the
             tools, community, and confidence to turn ideas into impact.
           </motion.p>
 

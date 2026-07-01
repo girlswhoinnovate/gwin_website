@@ -61,7 +61,7 @@ const programs = [
     title: "GWIN Online Network",
     tagline: "Free · All Ages · Year-Round",
     description:
-      "Our online community connects young women aged 14–22 with peers, mentors, and industry leaders from across the country. Get advice, find collaborators, discover opportunities, and never build alone.",
+      "Our online community connects young women with peers, mentors, and industry leaders from across the country. Get advice, find collaborators, discover opportunities, and never build alone.",
     features: [
       "Peer community of ambitious girls across 43+ schools",
       "Direct access to mentors and female founders",

@@ -65,7 +65,7 @@ export default function Footer() {
               Girls Who Innovate
             </p>
             <p className="text-sm leading-relaxed" style={{ color: "#1E293B", opacity: 0.65 }}>
-              Empowering girls aged 14–22 to become the entrepreneurs, innovators, and leaders of
+              Empowering girls to become the entrepreneurs, innovators, and leaders of
               tomorrow.
             </p>
           </div>
