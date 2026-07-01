@@ -99,7 +99,7 @@ export default function Hero() {
               style={{ backgroundColor: "#F6EBFF", color: "#460C61" }}
             >
               <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "#460C61" }} />
-              Applications Open · Summer 2026
+              Applications Closed · Summer 2026
             </span>
           </motion.div>
 

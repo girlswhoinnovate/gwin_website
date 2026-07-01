@@ -7,7 +7,7 @@ const items = [
   "561 Girls Interested",
   "43 Schools & Universities",
   "Free Summer Bootcamp",
-  "Applications Open · Summer 2026",
+  "Applications Closed · Summer 2026",
   "Female Entrepreneurship",
   "Innovation Has No Age Limit",
   "Pitch. Build. Lead.",
