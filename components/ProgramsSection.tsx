@@ -26,8 +26,8 @@ const programs = [
       { place: "3rd Place", amount: "$100", medal: "🥉" },
       { place: "Special Awards", amount: "More prizes to help kickstart your project", medal: "⭐" },
     ],
-    cta: "Apply for Bootcamp",
-    ctaHref: "https://forms.gle/RWsPnSCAgZmhwQ2f9",
+    closedNote: true,
+    discordHref: "https://discord.gg/NG9zSSeHZC",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-7 h-7">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
@@ -201,21 +201,38 @@ export default function ProgramsSection() {
                 {program.description}
               </p>
 
-              <motion.a
-                href={program.ctaHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="self-start inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white mb-3"
-                style={{ backgroundColor: "#460C61" }}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                transition={{ type: "spring" as const, stiffness: 400, damping: 20 }}
-              >
-                {program.cta}
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                </svg>
-              </motion.a>
+              {"closedNote" in program && program.closedNote ? (
+                <p className="text-sm font-medium mb-3" style={{ color: "#460C61" }}>
+                  Applications are closed for the Summer 2026 Bootcamp.
+                  <br />
+                  <a
+                    href={program.discordHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2 hover:opacity-80"
+                    style={{ color: "#7A4A8A" }}
+                  >
+                    Stay tuned
+                  </a>{" "}
+                  for next year&apos;s program!
+                </p>
+              ) : (
+                <motion.a
+                  href={program.ctaHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="self-start inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white mb-3"
+                  style={{ backgroundColor: "#460C61" }}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: "spring" as const, stiffness: 400, damping: 20 }}
+                >
+                  {program.cta}
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </motion.a>
+              )}
 
               {/* Prize pool — only shown for bootcamp, pushed to bottom */}
               {"prizes" in program && program.prizes && (
