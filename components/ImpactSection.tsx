@@ -42,7 +42,7 @@ function ProgressBar({ pct, delay }: { pct: number; delay: number }) {
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const traction = [
-  { value: 95, suffix: "", label: "Girls Impacted", pct: 17 },
+  { value: 733, suffix: "", label: "Girls Impacted", pct: 17 },
   { value: 561, suffix: "", label: "Girls Interested in the Program", pct: 100 },
   { value: 43, suffix: "", label: "Schools & Universities Reached", pct: 43 },
 ];
