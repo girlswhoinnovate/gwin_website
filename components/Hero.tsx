@@ -139,15 +139,6 @@ export default function Hero() {
             className="flex flex-row flex-wrap justify-start gap-3"
             variants={fadeUp}
           >
-            <motion.button
-              type="button"
-              disabled
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white cursor-not-allowed opacity-60"
-              style={{ backgroundColor: "#460C61" }}
-            >
-              Applications Closed
-            </motion.button>
-
             <motion.a
               href="#programs"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold border-2"
