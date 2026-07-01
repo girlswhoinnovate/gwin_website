@@ -6,7 +6,7 @@ const links = [
   { label: "Programs", href: "#programs" },
   { label: "About", href: "#about" },
   { label: "Impact", href: "#impact" },
-  { label: "Apply", href: "https://forms.gle/RWsPnSCAgZmhwQ2f9" },
+  { label: "Apply", href: "https://forms.gle/abyXShxxPMKYR8To6" },
 ];
 
 const socials = [
