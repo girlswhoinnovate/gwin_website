@@ -207,7 +207,7 @@ export default function Hero() {
             }}
             whileHover={{ scale: 1.06 }}
           >
-            <span className="text-lg font-extrabold text-white">95+</span>
+            <span className="text-lg font-extrabold text-white">700+</span>
             <span className="text-xs font-semibold leading-tight text-white opacity-80">Girls<br />Impacted</span>
           </motion.div>
 
