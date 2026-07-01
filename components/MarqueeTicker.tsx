@@ -3,11 +3,10 @@
 // Infinite horizontal marquee — CSS-driven so it's silky smooth at any frame rate.
 
 const items = [
-  "95 Girls Impacted",
-  "561 Girls Interested",
+  "700+ Girls Impacted",
   "43 Schools & Universities",
   "Free Summer Bootcamp",
-  "Applications Closed · Summer 2026",
+  "Chapter Applications Open",
   "Female Entrepreneurship",
   "Innovation Has No Age Limit",
   "Pitch. Build. Lead.",
