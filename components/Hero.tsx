@@ -24,6 +24,12 @@ const container: Variants = {
   visible: { transition: { staggerChildren: 0.16, delayChildren: 0.05 } },
 };
 
+const sponsors = [
+  { name: "University of Virginia", src: "/images/uva_logo.png", size: "w-48 h-24 sm:w-56 sm:h-28" },
+  { name: "Duke University", src: "/images/duke_logo.png", size: "w-32 h-16 sm:w-40 sm:h-20", className: "-ml-8" },
+  { name: "Hilton", src: "/images/hilton_logo.png", size: "w-32 h-16 sm:w-40 sm:h-20" },
+];
+
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -223,6 +229,34 @@ export default function Hero() {
         </motion.div>
 
       </div>
+      </div>
+
+      {/* Sponsored by */}
+      <div className="relative z-10 pb-28 sm:pb-36">
+        <div className="mx-auto max-w-5xl px-6 flex flex-col items-center gap-4">
+          <span
+            className="text-xs font-semibold tracking-widest uppercase"
+            style={{ color: "#7A4A8A" }}
+          >
+            Sponsored By
+          </span>
+          <div className="flex flex-wrap items-center justify-center gap-x-20 gap-y-8">
+            {sponsors.map((sponsor) => (
+              <div
+                key={sponsor.name}
+                className={`relative transition-transform duration-300 hover:scale-110 ${sponsor.size ?? "w-40 h-20 sm:w-48 sm:h-24"} ${sponsor.className ?? ""}`}
+              >
+                <Image
+                  src={sponsor.src}
+                  alt={sponsor.name}
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Scroll hint */}
