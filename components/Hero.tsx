@@ -233,17 +233,24 @@ export default function Hero() {
 
       {/* Sponsored by */}
       <div className="relative z-10 pb-28 sm:pb-36">
-        <div className="mx-auto max-w-5xl px-6 flex flex-col items-center gap-4">
-          <span
+        <motion.div
+          className="mx-auto max-w-5xl px-6 flex flex-col items-center gap-4"
+          variants={container}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.span
+            variants={fadeUp}
             className="text-xs font-semibold tracking-widest uppercase"
             style={{ color: "#7A4A8A" }}
           >
             Sponsored By
-          </span>
+          </motion.span>
           <div className="flex flex-wrap items-center justify-center gap-x-20 gap-y-8">
             {sponsors.map((sponsor) => (
-              <div
+              <motion.div
                 key={sponsor.name}
+                variants={fadeUp}
                 className={`relative transition-transform duration-300 hover:scale-110 ${sponsor.size ?? "w-40 h-20 sm:w-48 sm:h-24"} ${sponsor.className ?? ""}`}
               >
                 <Image
@@ -253,10 +260,10 @@ export default function Hero() {
                   className="object-contain"
                   unoptimized
                 />
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Scroll hint */}
