@@ -139,30 +139,14 @@ export default function Hero() {
             className="flex flex-row flex-wrap justify-start gap-3"
             variants={fadeUp}
           >
-            <motion.a
-              href="https://forms.gle/RWsPnSCAgZmhwQ2f9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white"
+            <motion.button
+              type="button"
+              disabled
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white cursor-not-allowed opacity-60"
               style={{ backgroundColor: "#460C61" }}
-              animate={{
-                boxShadow: [
-                  "0 0 0 0px rgba(70,12,97,0.45)",
-                  "0 0 0 10px rgba(70,12,97,0)",
-                  "0 0 0 0px rgba(70,12,97,0)",
-                ],
-              }}
-              transition={{
-                boxShadow: { duration: 2.2, repeat: Infinity, repeatDelay: 0.6, delay: 1.4 },
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.96 }}
             >
-              Apply Today
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-              </svg>
-            </motion.a>
+              Applications Closed
+            </motion.button>
 
             <motion.a
               href="#programs"

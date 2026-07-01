@@ -156,21 +156,28 @@ export default function ImpactSection() {
           <p className="text-lg font-semibold text-white mb-6 opacity-90">
             Ready to be part of the next chapter?
           </p>
-          <motion.a
-            href="https://forms.gle/RWsPnSCAgZmhwQ2f9"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold"
-            style={{ backgroundColor: "#E2BDFF", color: "#460C61" }}
-            whileHover={{ scale: 1.05, backgroundColor: "#FFFFFF" }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring" as const, stiffness: 380, damping: 22 }}
-          >
-            Apply Today
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-            </svg>
-          </motion.a>
+          <div className="flex flex-row flex-wrap justify-center gap-4">
+            <motion.a
+              href="https://docs.google.com/forms/d/e/1FAIpQLScoSynXmACCTkW-78iiN67yZadcOUoRjsJHt4rcaIplU62rSQ/viewform?usp=send_form"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold"
+              style={{ backgroundColor: "#E2BDFF", color: "#460C61" }}
+              whileHover={{ scale: 1.05, backgroundColor: "#FFFFFF" }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring" as const, stiffness: 380, damping: 22 }}
+            >
+              Chapter Applications Open
+            </motion.a>
+            <motion.button
+              type="button"
+              disabled
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold cursor-not-allowed opacity-60"
+              style={{ backgroundColor: "#E2BDFF", color: "#460C61" }}
+            >
+              Summer 2026 Bootcamp Applications Closed
+            </motion.button>
+          </div>
         </motion.div>
 
       </div>
