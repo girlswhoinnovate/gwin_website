@@ -24,10 +24,12 @@ const container: Variants = {
   visible: { transition: { staggerChildren: 0.16, delayChildren: 0.05 } },
 };
 
-const sponsors = [
-  { name: "University of Virginia", src: "/images/uva_logo.png", size: "w-48 h-24 sm:w-56 sm:h-28" },
-  { name: "Duke University", src: "/images/duke_logo.png", size: "w-32 h-16 sm:w-40 sm:h-20", className: "-ml-8" },
-  { name: "Hilton", src: "/images/hilton_logo.png", size: "w-32 h-16 sm:w-40 sm:h-20" },
+const sponsors: { name: string; src: string; size?: string; className?: string; row: 1 | 2 }[] = [
+  { name: "University of Virginia", src: "/images/uva_logo.png", size: "w-48 h-24 sm:w-56 sm:h-28", className: "-ml-4 sm:-ml-6", row: 1 },
+  { name: "JPMorgan", src: "/images/jpm_logo.png", size: "w-36 h-18 sm:w-44 sm:h-22", className: "-ml-3 sm:-ml-6", row: 1 },
+  { name: "Duke University", src: "/images/duke_logo.png", size: "w-32 h-16 sm:w-40 sm:h-20", row: 1 },
+  { name: "iLab", src: "/images/ilab_logo.png", size: "w-28 h-10 sm:w-36 sm:h-12", row: 2 },
+  { name: "Hilton", src: "/images/hilton_logo.png", size: "w-32 h-16 sm:w-40 sm:h-20", row: 2 },
 ];
 
 export default function Hero() {
@@ -246,21 +248,32 @@ export default function Hero() {
           >
             Sponsored By
           </motion.span>
-          <div className="flex flex-wrap items-center justify-center gap-x-20 gap-y-8">
-            {sponsors.map((sponsor) => (
-              <motion.div
-                key={sponsor.name}
-                variants={fadeUp}
-                className={`relative transition-transform duration-300 hover:scale-110 ${sponsor.size ?? "w-40 h-20 sm:w-48 sm:h-24"} ${sponsor.className ?? ""}`}
+          <div className="flex flex-col items-center gap-y-4 sm:gap-y-6">
+            {[1, 2].map((row) => (
+              <div
+                key={row}
+                className={`flex flex-wrap items-center justify-center ${
+                  row === 1 ? "gap-x-10 sm:gap-x-16" : "gap-x-8 sm:gap-x-12"
+                }`}
               >
-                <Image
-                  src={sponsor.src}
-                  alt={sponsor.name}
-                  fill
-                  className="object-contain"
-                  unoptimized
-                />
-              </motion.div>
+                {sponsors
+                  .filter((sponsor) => sponsor.row === row)
+                  .map((sponsor) => (
+                    <motion.div
+                      key={sponsor.name}
+                      variants={fadeUp}
+                      className={`relative transition-transform duration-300 hover:scale-110 ${sponsor.size ?? "w-40 h-20 sm:w-48 sm:h-24"} ${sponsor.className ?? ""}`}
+                    >
+                      <Image
+                        src={sponsor.src}
+                        alt={sponsor.name}
+                        fill
+                        className="object-contain"
+                        unoptimized
+                      />
+                    </motion.div>
+                  ))}
+              </div>
             ))}
           </div>
         </motion.div>
