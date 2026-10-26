@@ -72,7 +72,7 @@ export const locations: ChapterLocation[] = [
     coordinates: [-78.508, 38.0336],
     kind: "hub",
     icon: "/images/uva_mini.png",
-    iconScale: 1.5,
+    iconScale: 1.0,
   },
   {
     id: "duke",
