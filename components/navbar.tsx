@@ -15,9 +15,10 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "Programs", href: "#programs" },
-    { label: "About", href: "#about" },
-    { label: "Impact", href: "#impact" },
+    { label: "Programs", href: "/#programs" },
+    { label: "Chapters", href: "/#chapters" },
+    { label: "About", href: "/#about" },
+    { label: "Impact", href: "/#impact" },
   ];
 
   return (
