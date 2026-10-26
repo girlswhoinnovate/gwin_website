@@ -126,7 +126,7 @@ export default function ProgramsSection() {
             What We Offer
           </p>
           <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight" style={{ color: "#1E293B" }}>
-            Our Programs
+            Programs
           </h2>
           <motion.div
             className="mx-auto mt-4 h-1 rounded-full"
