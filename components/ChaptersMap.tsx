@@ -130,9 +130,22 @@ export default function ChaptersMap({
                 style={{ cursor: "pointer" }}
               >
                 {isHub ? (
-                  <g transform={`translate(0, -10) ${isActive ? "scale(1.25)" : ""}`}>
-                    <path d={DIAMOND_PATH} fill="#FFFFFF" stroke="#460C61" strokeWidth={2} />
-                    <circle cx={0} cy={0} r={2.5} fill="#460C61" />
+                  <g transform={`${isActive ? "scale(1.2) " : ""}translate(0, -10)`}>
+                    {loc.icon ? (
+                      <image
+                        href={loc.icon}
+                        x={-11 * (loc.mapIconScale ?? 1)}
+                        y={-11 * (loc.mapIconScale ?? 1)}
+                        width={22 * (loc.mapIconScale ?? 1)}
+                        height={22 * (loc.mapIconScale ?? 1)}
+                        preserveAspectRatio="xMidYMid meet"
+                      />
+                    ) : (
+                      <>
+                        <path d={DIAMOND_PATH} fill="#FFFFFF" stroke="#460C61" strokeWidth={2} />
+                        <circle cx={0} cy={0} r={2.5} fill="#460C61" />
+                      </>
+                    )}
                   </g>
                 ) : (
                   <g

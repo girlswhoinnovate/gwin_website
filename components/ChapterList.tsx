@@ -2,6 +2,7 @@
 
 import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { locations, type ChapterLocation } from "@/lib/chapterLocations";
 import { LocationIcon } from "@/lib/chapterIcons";
 
@@ -27,10 +28,20 @@ function ListItem({
       }}
     >
       <span
-        className="mt-0.5 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
-        style={{ backgroundColor: "#F6EBFF" }}
+        className="relative mt-0.5 flex-shrink-0 w-8 h-8 flex items-center justify-center"
+        style={{ backgroundColor: "#FFFFFF" }}
       >
-        <LocationIcon kind={location.kind} />
+        {location.icon ? (
+          <Image
+            src={location.icon}
+            alt={`${location.school} logo`}
+            fill
+            className="object-contain"
+            style={{ transform: location.iconScale ? `scale(${location.iconScale})` : undefined }}
+          />
+        ) : (
+          <LocationIcon kind={location.kind} />
+        )}
       </span>
       <div className="min-w-0">
         <p className="text-sm font-semibold truncate" style={{ color: "#1E293B" }}>

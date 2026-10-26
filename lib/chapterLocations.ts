@@ -6,6 +6,13 @@ export type ChapterLocation = {
   state: string;
   coordinates: [number, number];
   kind: "chapter" | "hub";
+  icon?: string;
+  // relative size multipliers for `icon`, since the source logos aren't
+  // cropped to the same visual weight (e.g. UVA's mark sits in a lot of
+  // whitespace). `iconScale` applies in the sidebar list, `mapIconScale`
+  // on the map; each defaults to 1 when omitted.
+  iconScale?: number;
+  mapIconScale?: number;
 };
 
 export const locations: ChapterLocation[] = [
@@ -64,6 +71,8 @@ export const locations: ChapterLocation[] = [
     state: "VA",
     coordinates: [-78.508, 38.0336],
     kind: "hub",
+    icon: "/images/uva_mini.png",
+    iconScale: 1.5,
   },
   {
     id: "duke",
@@ -75,6 +84,9 @@ export const locations: ChapterLocation[] = [
     // pin doesn't sit on top of the nearby Apex and Chapel Hill markers
     coordinates: [-77.6, 34.69],
     kind: "hub",
+    icon: "/images/duke_mini.png",
+    iconScale: 0.85,
+    mapIconScale: 0.9,
   },
   {
     id: "barnard-columbia",
@@ -86,5 +98,6 @@ export const locations: ChapterLocation[] = [
     // pin doesn't sit on top of the nearby Nanuet marker
     coordinates: [-75.42, 40.36],
     kind: "hub",
+    icon: "/images/columbia_mini.png",
   },
 ];
