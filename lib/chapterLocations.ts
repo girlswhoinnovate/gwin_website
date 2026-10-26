@@ -22,7 +22,9 @@ export const locations: ChapterLocation[] = [
     school: "Apex Friendship High School",
     city: "Apex",
     state: "NC",
-    coordinates: [-78.8503, 35.7327],
+    // nudged slightly south/east of the true coordinates (35.7327, -78.8503)
+    // so the pin doesn't overlap the nearby Duke marker
+    coordinates: [-78.5003, 35.6327],
     kind: "chapter",
   },
   {
@@ -60,7 +62,9 @@ export const locations: ChapterLocation[] = [
     school: "Nanuet Senior High School",
     city: "Nanuet",
     state: "NY",
-    coordinates: [-74.0121, 41.0909],
+    // nudged slightly north/west of the true coordinates (41.0909, -74.0121)
+    // so the pin doesn't overlap the nearby Columbia marker
+    coordinates: [-74.1621, 41.1909],
     kind: "chapter",
   },
   {
@@ -80,9 +84,9 @@ export const locations: ChapterLocation[] = [
     school: "Duke University",
     city: "Durham",
     state: "NC",
-    // nudged southeast from the true coordinates (36.0014, -78.9382) so the
-    // pin doesn't sit on top of the nearby Apex and Chapel Hill markers
-    coordinates: [-77.6, 34.69],
+    // nudged slightly north/west of the true coordinates (36.0014, -78.9382)
+    // so the pin doesn't overlap the nearby Apex marker
+    coordinates: [-79.0882, 36.1014],
     kind: "hub",
     icon: "/images/duke_mini.png",
     iconScale: 0.85,
@@ -94,9 +98,9 @@ export const locations: ChapterLocation[] = [
     school: "Columbia University and Barnard College",
     city: "New York City",
     state: "NY",
-    // nudged southwest from the true coordinates (40.8075, -73.9626) so the
-    // pin doesn't sit on top of the nearby Nanuet marker
-    coordinates: [-75.42, 40.36],
+    // nudged slightly south/east of the true coordinates (40.8075, -73.9626)
+    // so the pin doesn't overlap the nearby Nanuet marker
+    coordinates: [-73.3126, 40.6075],
     kind: "hub",
     icon: "/images/columbia_mini.png",
   },
