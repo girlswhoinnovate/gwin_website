@@ -222,7 +222,7 @@ export default function Hero() {
       </div>
       </div>
 
-      {/* Sponsored by */}
+      {/* Supported by */}
       <div className="relative z-10 pb-28 sm:pb-36">
         <motion.div
           className="mx-auto max-w-5xl px-6 flex flex-col items-center gap-4"
@@ -235,7 +235,7 @@ export default function Hero() {
             className="text-xs font-semibold tracking-widest uppercase"
             style={{ color: "#7A4A8A" }}
           >
-            Sponsored By
+            Supported By
           </motion.span>
           <div className="flex flex-col items-center gap-y-4 sm:gap-y-6">
             {[1, 2].map((row) => (
