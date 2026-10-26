@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -15,6 +15,7 @@ const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 const CENTER: [number, number] = [-96, 38.5];
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 5;
+const ZOOM_TRANSITION_MS = 400;
 
 function ZoomButton({
   onClick,
@@ -45,27 +46,45 @@ const PIN_SCALE = 0.95;
 const PIN_TIP_X = 12 * PIN_SCALE;
 const PIN_TIP_Y = 21.9 * PIN_SCALE;
 
-function Tooltip({ label, sub }: { label: string; sub: string }) {
-  const width = Math.max(150, label.length * 8.6 + 32);
-  const height = 46;
+function Tooltip({
+  label,
+  sub,
+  zoom,
+  offset,
+  rectRef,
+}: {
+  label: string;
+  sub: string;
+  zoom: number;
+  offset: { x: number; y: number };
+  rectRef: React.RefObject<SVGRectElement | null>;
+}) {
+  const width = Math.max(160, label.length * 9.9 + 24);
+  const height = 53;
+  // counter-scale against the map's zoom so the tooltip never grows past its
+  // size at the default zoom level, however far in the user zooms
+  const scale = 1 / zoom;
   return (
-    <g transform={`translate(0, -${PIN_TIP_Y + 12})`} style={{ pointerEvents: "none" }}>
-      <rect
-        x={-width / 2}
-        y={-height}
-        width={width}
-        height={height}
-        rx={8}
-        fill="#2D0840"
-        stroke="#E2BDFF"
-        strokeWidth={1.25}
-      />
-      <text textAnchor="middle" y={-27} fontSize={14} fontWeight={700} fill="#FFFFFF">
-        {label}
-      </text>
-      <text textAnchor="middle" y={-10} fontSize={12} fill="#E2BDFF">
-        {sub}
-      </text>
+    <g transform={`scale(${scale}) translate(${offset.x}, ${offset.y})`} style={{ pointerEvents: "none" }}>
+      <g transform={`translate(0, -${PIN_TIP_Y + 14})`}>
+        <rect
+          ref={rectRef}
+          x={-width / 2}
+          y={-height}
+          width={width}
+          height={height}
+          rx={9}
+          fill="#2D0840"
+          stroke="#E2BDFF"
+          strokeWidth={1.25}
+        />
+        <text textAnchor="middle" y={-31} fontSize={16} fontWeight={700} fill="#FFFFFF">
+          {label}
+        </text>
+        <text textAnchor="middle" y={-12} fontSize={14} fill="#E2BDFF">
+          {sub}
+        </text>
+      </g>
     </g>
   );
 }
@@ -78,10 +97,70 @@ export default function ChaptersMap({
   setActiveId: Dispatch<SetStateAction<string | null>>;
 }) {
   const [zoom, setZoom] = useState(1);
+  const [isZoomAnimating, setIsZoomAnimating] = useState(false);
+  const zoomAnimationTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeLocation = locations.find((loc) => loc.id === activeId) ?? null;
 
-  const zoomIn = () => setZoom((z) => Math.min(z * 1.5, MAX_ZOOM));
-  const zoomOut = () => setZoom((z) => Math.max(z / 1.5, MIN_ZOOM));
+  const svgRef = useRef<SVGSVGElement>(null);
+  const tooltipRectRef = useRef<SVGRectElement>(null);
+  const tooltipOffsetRef = useRef({ x: 0, y: 0 });
+  const [tooltipOffset, setTooltipOffset] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    return () => {
+      if (zoomAnimationTimeout.current) clearTimeout(zoomAnimationTimeout.current);
+    };
+  }, []);
+
+  // Keep the active tooltip from being clipped by the map's edges: measure
+  // where it actually lands on screen and nudge it back inward if needed.
+  // The previous offset is subtracted back out so each pass starts from the
+  // tooltip's natural (unshifted) position rather than compounding drift.
+  useLayoutEffect(() => {
+    const svg = svgRef.current;
+    const rect = tooltipRectRef.current;
+    if (!svg || !rect || !activeLocation) {
+      tooltipOffsetRef.current = { x: 0, y: 0 };
+      setTooltipOffset({ x: 0, y: 0 });
+      return;
+    }
+
+    const svgRect = svg.getBoundingClientRect();
+    const tipRect = rect.getBoundingClientRect();
+    const ctm = rect.getScreenCTM();
+    const scaleX = ctm?.a || 1;
+    const scaleY = ctm?.d || 1;
+    const margin = 10;
+
+    const prevOffsetPxX = tooltipOffsetRef.current.x * scaleX;
+    const prevOffsetPxY = tooltipOffsetRef.current.y * scaleY;
+    const left = tipRect.left - prevOffsetPxX;
+    const right = tipRect.right - prevOffsetPxX;
+    const top = tipRect.top - prevOffsetPxY;
+    const bottom = tipRect.bottom - prevOffsetPxY;
+
+    let dxPx = 0;
+    if (left < svgRect.left + margin) dxPx = svgRect.left + margin - left;
+    else if (right > svgRect.right - margin) dxPx = svgRect.right - margin - right;
+
+    let dyPx = 0;
+    if (top < svgRect.top + margin) dyPx = svgRect.top + margin - top;
+    else if (bottom > svgRect.bottom - margin) dyPx = svgRect.bottom - margin - bottom;
+
+    const next = { x: scaleX ? dxPx / scaleX : 0, y: scaleY ? dyPx / scaleY : 0 };
+    tooltipOffsetRef.current = next;
+    setTooltipOffset(next);
+  }, [activeId, zoom, activeLocation]);
+
+  const animateZoom = (updater: (z: number) => number) => {
+    setIsZoomAnimating(true);
+    setZoom(updater);
+    if (zoomAnimationTimeout.current) clearTimeout(zoomAnimationTimeout.current);
+    zoomAnimationTimeout.current = setTimeout(() => setIsZoomAnimating(false), ZOOM_TRANSITION_MS);
+  };
+
+  const zoomIn = () => animateZoom((z) => Math.min(z * 1.5, MAX_ZOOM));
+  const zoomOut = () => animateZoom((z) => Math.max(z / 1.5, MIN_ZOOM));
 
   return (
     <div
@@ -89,6 +168,7 @@ export default function ChaptersMap({
       style={{ borderColor: "#E2BDFF", backgroundColor: "#F6EBFF" }}
     >
       <ComposableMap
+        ref={svgRef}
         projection="geoAlbersUsa"
         className="w-full h-auto"
         style={{ width: "100%", height: "auto" }}
@@ -98,6 +178,9 @@ export default function ChaptersMap({
           zoom={zoom}
           minZoom={MIN_ZOOM}
           maxZoom={MAX_ZOOM}
+          style={{
+            transition: isZoomAnimating ? `transform ${ZOOM_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1)` : undefined,
+          }}
           onMoveEnd={({ zoom: z }) => {
             if (z !== undefined) setZoom(z);
           }}
@@ -164,7 +247,13 @@ export default function ChaptersMap({
               always paints above every marker, regardless of draw order. */}
           {activeLocation && (
             <Marker coordinates={activeLocation.coordinates} style={{ pointerEvents: "none" }}>
-              <Tooltip label={activeLocation.name} sub={`${activeLocation.city}, ${activeLocation.state}`} />
+              <Tooltip
+                label={activeLocation.name}
+                sub={`${activeLocation.city}, ${activeLocation.state}`}
+                zoom={zoom}
+                offset={tooltipOffset}
+                rectRef={tooltipRectRef}
+              />
             </Marker>
           )}
         </ZoomableGroup>
