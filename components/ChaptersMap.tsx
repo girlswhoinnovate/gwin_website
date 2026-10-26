@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import Image from "next/image";
 import {
   ComposableMap,
   Geographies,
@@ -8,8 +9,8 @@ import {
   Marker,
   ZoomableGroup,
 } from "react-simple-maps";
-import { locations } from "@/lib/chapterLocations";
-import { PIN_PATH, DIAMOND_PATH } from "@/lib/chapterIcons";
+import { locations, type ChapterLocation } from "@/lib/chapterLocations";
+import { PIN_PATH, DIAMOND_PATH, LocationIcon } from "@/lib/chapterIcons";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 const CENTER: [number, number] = [-96, 38.5];
@@ -89,13 +90,52 @@ function Tooltip({
   );
 }
 
+export function LocationCard({ location }: { location: ChapterLocation }) {
+  return (
+    <div
+      className="flex w-full items-start gap-3 rounded-xl border p-3"
+      style={{ borderColor: "#E2BDFF", backgroundColor: "#FFFFFF" }}
+    >
+      <span
+        className="relative mt-0.5 flex-shrink-0 w-8 h-8 flex items-center justify-center"
+        style={{ backgroundColor: "#FFFFFF" }}
+      >
+        {location.icon ? (
+          <Image
+            src={location.icon}
+            alt={`${location.school} logo`}
+            fill
+            className="object-contain"
+            style={{ transform: location.iconScale ? `scale(${location.iconScale})` : undefined }}
+          />
+        ) : (
+          <LocationIcon kind={location.kind} />
+        )}
+      </span>
+      <div className="min-w-0">
+        <p className="text-sm font-semibold truncate" style={{ color: "#1E293B" }}>
+          {location.school}
+        </p>
+        <p className="text-xs" style={{ color: "#7A4A8A" }}>
+          {location.city}, {location.state}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function ChaptersMap({
-  activeId,
-  setActiveId,
+  activeId: activeIdProp,
+  setActiveId: setActiveIdProp,
 }: {
-  activeId: string | null;
-  setActiveId: Dispatch<SetStateAction<string | null>>;
-}) {
+  activeId?: string | null;
+  setActiveId?: Dispatch<SetStateAction<string | null>>;
+} = {}) {
+  const [internalActiveId, setInternalActiveId] = useState<string | null>(null);
+  const isControlled = setActiveIdProp !== undefined;
+  const activeId = isControlled ? activeIdProp ?? null : internalActiveId;
+  const setActiveId = isControlled ? setActiveIdProp! : setInternalActiveId;
+
   const [zoom, setZoom] = useState(1);
   const [isZoomAnimating, setIsZoomAnimating] = useState(false);
   const zoomAnimationTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
