@@ -169,14 +169,14 @@ export default function ImpactSection() {
             >
               Chapter Applications Open
             </motion.a>
-            <motion.button
+            {/* <motion.button
               type="button"
               disabled
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold cursor-not-allowed opacity-60"
               style={{ backgroundColor: "#E2BDFF", color: "#460C61" }}
             >
-              Summer 2026 Bootcamp Applications Closed
-            </motion.button>
+              Summer 2027 Bootcamp Application (Coming Soon)
+            </motion.button> */}
           </div>
         </motion.div>
 

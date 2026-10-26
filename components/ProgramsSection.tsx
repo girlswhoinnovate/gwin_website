@@ -203,7 +203,7 @@ export default function ProgramsSection() {
 
               {"closedNote" in program && program.closedNote ? (
                 <p className="text-sm font-medium mb-3" style={{ color: "#460C61" }}>
-                  Applications are closed for the Summer 2026 Bootcamp.
+                  Summer 2027 Bootcamp applications are opening soon.
                   <br />
                   <a
                     href={program.discordHref}

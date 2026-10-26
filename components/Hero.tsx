@@ -100,17 +100,6 @@ export default function Hero() {
           initial="hidden"
           animate="visible"
         >
-          {/* Eyebrow */}
-          <motion.div variants={fadeUp}>
-            <span
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase"
-              style={{ backgroundColor: "#F6EBFF", color: "#460C61" }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "#460C61" }} />
-              Applications Closed · Summer 2026
-            </span>
-          </motion.div>
-
           {/* Headline */}
           <motion.h1
             variants={fadeUp}
