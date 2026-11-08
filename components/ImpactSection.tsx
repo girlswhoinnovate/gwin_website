@@ -48,7 +48,6 @@ export default function ImpactSection() {
           index="04"
           label="Our traction"
           title="Impact"
-          blurb="The numbers so far — and we're just getting started."
           dark
         />
 

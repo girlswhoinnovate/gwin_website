@@ -21,7 +21,7 @@ export default function AboutSection() {
           index="03"
           label="Who we are"
           title="About"
-          blurb="Innovation has no age limit — and confidence should never be a barrier."
+          blurb="Innovation has no age limit, and confidence should never be a barrier."
         />
 
         {/* ── Statement + photo ── */}

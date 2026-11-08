@@ -14,6 +14,33 @@ const sponsors: { name: string; src: string; href: string; size?: string; classN
   { name: "Hilton", src: "/images/hilton_logo.png", href: "https://www.hilton.com/en/", size: "w-32 h-16 sm:w-40 sm:h-20", row: 2 },
 ];
 
+// Sponsor highlight: each logo swells for SWELL_S seconds, and the next one
+// starts exactly as it finishes, so only one logo is ever growing at a time.
+// It runs as a CSS animation (on the compositor, off the main thread) so the
+// logos scale smoothly instead of jittering while other JS animations run.
+const SWELL_S = 5;
+const SWELL_CYCLE_S = SWELL_S * sponsors.length;
+
+// One logo's turn is the first 1/n of the cycle: grow, hold, settle, then rest
+// while the others take their turns. Sine easing starts and stops gently.
+const turn = 100 / sponsors.length;
+const sine = "cubic-bezier(0.37, 0, 0.63, 1)";
+const swellKeyframes = `
+@keyframes sponsor-swell {
+  0% { transform: scale(1); animation-timing-function: ${sine}; }
+  ${turn * 0.4}% { transform: scale(1.1); animation-timing-function: linear; }
+  ${turn * 0.6}% { transform: scale(1.1); animation-timing-function: ${sine}; }
+  ${turn}%, 100% { transform: scale(1); }
+}
+.sponsor-swell {
+  animation: sponsor-swell ${SWELL_CYCLE_S}s infinite both;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-swell { animation: none; }
+}`;
+
 export default function IntroSection() {
   const textRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
@@ -138,31 +165,42 @@ export default function IntroSection() {
           animate={sponsorsInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease }}
         >
+          <style>{swellKeyframes}</style>
           <span className="mono-label" style={{ color: "#7A4A8A" }}>
             Supported by
           </span>
-          <div className="flex flex-col items-center gap-y-4 sm:gap-y-6">
+          <div className="flex flex-col items-center gap-y-8 sm:gap-y-12">
             {[1, 2].map((row) => (
               <div
                 key={row}
                 className={`flex flex-wrap items-center justify-center ${
-                  row === 1 ? "gap-x-10 sm:gap-x-16" : "gap-x-8 sm:gap-x-12"
+                  row === 1 ? "gap-x-14 gap-y-8 sm:gap-x-28" : "gap-x-12 gap-y-8 sm:gap-x-24"
                 }`}
               >
                 {sponsors
                   .filter((sponsor) => sponsor.row === row)
-                  .map((sponsor) => (
-                    <a
-                      key={sponsor.name}
-                      href={sponsor.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={sponsor.name}
-                      className={`relative block transition-transform duration-300 hover:scale-110 ${sponsor.size ?? "w-40 h-20 sm:w-48 sm:h-24"} ${sponsor.className ?? ""}`}
-                    >
-                      <Image src={sponsor.src} alt={sponsor.name} fill className="object-contain" unoptimized />
-                    </a>
-                  ))}
+                  .map((sponsor) => {
+                    const i = sponsors.indexOf(sponsor);
+                    return (
+                      // Each logo swells in turn: grow, hold briefly, settle back. This lives
+                      // on a wrapper so it doesn't override the link's CSS hover scale.
+                      <div
+                        key={sponsor.name}
+                        className={sponsorsInView ? "sponsor-swell" : undefined}
+                        style={{ animationDelay: `${i * SWELL_S}s` }}
+                      >
+                        <a
+                          href={sponsor.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={sponsor.name}
+                          className={`relative block transition-transform duration-300 hover:scale-110 ${sponsor.size ?? "w-40 h-20 sm:w-48 sm:h-24"} ${sponsor.className ?? ""}`}
+                        >
+                          <Image src={sponsor.src} alt={sponsor.name} fill sizes="(min-width: 640px) 224px, 192px" className="object-contain" />
+                        </a>
+                      </div>
+                    );
+                  })}
               </div>
             ))}
           </div>
