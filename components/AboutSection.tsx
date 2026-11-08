@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { motion, useInView, type Variants } from "framer-motion";
+import SectionHeader from "@/components/SectionHeader";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
@@ -54,43 +55,25 @@ const values = [
 ];
 
 export default function AboutSection() {
-  const headerRef = useRef<HTMLDivElement>(null);
   const missionRef = useRef<HTMLDivElement>(null);
   const valuesRef = useRef<HTMLDivElement>(null);
 
-  const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
   const missionInView = useInView(missionRef, { once: true, margin: "-80px" });
   const valuesInView = useInView(valuesRef, { once: true, margin: "-80px" });
 
   return (
-    <section id="about" className="bg-white py-14 px-6">
-      <div className="mx-auto max-w-5xl space-y-12">
+    <section id="about" className="py-20 md:py-28">
+      <div className="container-wide space-y-16">
 
-        {/* ── Section header ── */}
-        <motion.div
-          ref={headerRef}
-          initial={{ opacity: 0, y: 28 }}
-          animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55 }}
-          className="text-center"
-        >
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em]" style={{ color: "#460C61" }}>
-            Who We Are
-          </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight" style={{ color: "#1E293B" }}>
-            About Girls Who Innovate
-          </h2>
-          <motion.div
-            className="mx-auto mt-4 h-1 rounded-full"
-            style={{ backgroundColor: "#460C61" }}
-            initial={{ width: 0 }}
-            animate={headerInView ? { width: 64 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          />
-        </motion.div>
+        <SectionHeader
+          index="03"
+          label="Who we are"
+          title="About"
+          blurb="Girls Who Innovate gives high school and college girls the skills, mentors, and confidence to become innovators."
+        />
 
         {/* ── Mission + About split ── */}
-        <div ref={missionRef} className="grid lg:grid-cols-2 gap-8 items-stretch">
+        <div ref={missionRef} className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
 
           {/* Left — photo */}
           <motion.div
@@ -99,12 +82,7 @@ export default function AboutSection() {
             animate={missionInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            {/* Shadow card */}
-            <div
-              className="absolute inset-4 rounded-3xl"
-              style={{ backgroundColor: "#E2BDFF", opacity: 0.35, transform: "rotate(2deg)" }}
-            />
-            <div className="relative rounded-3xl overflow-hidden shadow-xl h-full min-h-[360px] w-full max-w-sm mx-auto lg:mx-0">
+            <div className="relative rounded-[32px] overflow-hidden h-full min-h-[420px] w-full">
               <Image
                 src="/images/2.svg"
                 alt="Girls Who Innovate — community members collaborating"
@@ -116,7 +94,7 @@ export default function AboutSection() {
           </motion.div>
 
           {/* Right — Mission + Story text */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col justify-center gap-8 lg:py-8">
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               animate={missionInView ? { opacity: 1, x: 0 } : {}}
@@ -185,8 +163,8 @@ export default function AboutSection() {
                 variants={fadeUp}
                 whileHover={{ y: -6, boxShadow: "0 12px 32px rgba(70,12,97,0.10)" }}
                 transition={{ type: "spring" as const, stiffness: 300, damping: 22 }}
-                className="rounded-2xl border p-6 cursor-default"
-                style={{ borderColor: "#E2BDFF", backgroundColor: "#FFFFFF" }}
+                className="rounded-[28px] p-7 cursor-default"
+                style={{ backgroundColor: "#FFFFFF" }}
               >
                 <div
                   className="w-9 h-9 rounded-full mb-4 flex items-center justify-center"

@@ -18,7 +18,7 @@ export default function ChaptersPage() {
   return (
     <>
       <ScrollProgress />
-      <main className="bg-white pt-28 pb-14 px-6">
+      <main className="pt-28 pb-14 px-6">
         <div className="mx-auto max-w-5xl">
           {/* Header */}
           <div className="mb-10 text-center">

@@ -1,5 +1,6 @@
 import ScrollProgress from "@/components/ScrollProgress";
 import Hero from "@/components/Hero";
+import IntroSection from "@/components/IntroSection";
 import StatsBar from "@/components/StatsBar";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import ProgramsSection from "@/components/ProgramsSection";
@@ -14,6 +15,7 @@ export default function Home() {
       <ScrollProgress />
       <main>
         <Hero />
+        <IntroSection />
         <StatsBar />
         <MarqueeTicker />
         <ProgramsSection />

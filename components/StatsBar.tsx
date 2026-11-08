@@ -104,7 +104,7 @@ function SectionLabel({ text, dark }: { text: string; dark?: boolean }) {
       initial={{ opacity: 0, y: 12 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.45 }}
-      className="mb-8 text-xs font-bold uppercase tracking-[0.2em]"
+      className="mb-8 mono-label"
       style={{ color: dark ? "#E2BDFF" : "#460C61" }}
     >
       {text}
@@ -118,8 +118,8 @@ export default function StatsBar() {
   return (
     <>
       {/* Row 1 — Industry stats — white background */}
-      <section className="bg-white py-10 px-6">
-        <div className="mx-auto max-w-5xl">
+      <section className="py-14 md:py-20">
+        <div className="container-wide">
           <SectionLabel text="Female Entrepreneurship in Numbers" />
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#E2BDFF]">
             {industryStats.map((stat, i) => (

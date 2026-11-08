@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView, LayoutGroup } from "framer-motion";
+import SectionHeader from "@/components/SectionHeader";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -112,54 +113,39 @@ export default function ProgramsSection() {
   const program = programs[active];
 
   return (
-    <section id="programs" ref={ref} className="bg-white py-14 px-6">
-      <div className="mx-auto max-w-5xl">
+    <section id="programs" ref={ref} className="py-20 md:py-28">
+      <div className="container-wide">
 
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55 }}
-          className="mb-8 text-center"
-        >
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em]" style={{ color: "#460C61" }}>
-            What We Offer
-          </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight" style={{ color: "#1E293B" }}>
-            Programs
-          </h2>
-          <motion.div
-            className="mx-auto mt-4 h-1 rounded-full"
-            style={{ backgroundColor: "#460C61" }}
-            initial={{ width: 0 }}
-            animate={inView ? { width: 64 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          />
-        </motion.div>
+        <SectionHeader
+          index="01"
+          label="What we offer"
+          title="Programs"
+          blurb="Bootcamps, student-run chapters, and a year-round online network — every path gets girls building, pitching, and leading."
+        />
 
         {/* Tab bar */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="mb-6 flex justify-center"
+          className="mb-6 flex"
         >
           <LayoutGroup>
             <div
-              className="inline-flex w-full md:w-auto rounded-xl p-1 gap-1"
-              style={{ backgroundColor: "#F6EBFF" }}
+              className="inline-flex w-full md:w-auto rounded-full p-1 gap-1"
+              style={{ backgroundColor: "#FFFFFF" }}
             >
               {programs.map((p, i) => (
                 <button
                   key={p.id}
                   onClick={() => setActive(i)}
-                  className="relative flex-1 md:flex-none px-5 py-2.5 text-sm font-semibold rounded-lg transition-colors duration-200 z-10"
+                  className="relative flex-1 md:flex-none px-3 sm:px-5 py-3 mono-label text-[11px] sm:text-xs rounded-full transition-colors duration-200 z-10"
                   style={{ color: active === i ? "#FFFFFF" : "#460C61" }}
                 >
                   {active === i && (
                     <motion.span
                       layoutId="tab-pill"
-                      className="absolute inset-0 rounded-lg z-[-1]"
+                      className="absolute inset-0 rounded-full z-[-1]"
                       style={{ backgroundColor: "#460C61" }}
                       transition={{ type: "spring" as const, stiffness: 380, damping: 32 }}
                     />
@@ -179,8 +165,8 @@ export default function ProgramsSection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.38, ease: "easeOut" }}
-            className="grid md:grid-cols-2 gap-8 items-stretch rounded-2xl border p-6 md:p-8"
-            style={{ borderColor: "#E2BDFF", backgroundColor: "#FFFFFF" }}
+            className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch rounded-[32px] p-6 md:p-10"
+            style={{ backgroundColor: "#FFFFFF" }}
           >
             {/* Left — copy */}
             <div className="flex flex-col">
@@ -276,7 +262,7 @@ export default function ProgramsSection() {
             {/* Right — photo + feature list */}
             <div className="flex flex-col gap-4">
               {/* Photo */}
-              <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[4/3] w-full">
+              <div className="relative rounded-[24px] overflow-hidden aspect-[4/3] w-full">
                 <Image
                   src="/images/3.svg"
                   alt="Girls Who Innovate — program participants in action"

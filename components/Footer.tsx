@@ -54,67 +54,79 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t px-6 py-10" style={{ borderColor: "#E2BDFF" }}>
-      <div className="mx-auto max-w-5xl">
+    <footer className="overflow-hidden pt-16 pb-6 md:pt-20 md:pb-7" style={{ backgroundColor: "#2D0840", color: "#E2BDFF" }}>
+      <div className="container-wide">
 
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-8">
+        <div className="grid gap-12 md:grid-cols-2">
 
           {/* Brand */}
-          <div className="max-w-xs">
-            <p className="text-xl font-extrabold mb-2" style={{ color: "#460C61" }}>
-              Girls Who Innovate
-            </p>
-            <p className="text-sm leading-relaxed" style={{ color: "#1E293B", opacity: 0.65 }}>
-              Empowering girls to become the entrepreneurs, innovators, and leaders of
-              tomorrow.
+          <div className="max-w-md">
+            <p className="text-3xl md:text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-white">
+              Empowering girls to become the entrepreneurs, innovators, and leaders of tomorrow.
             </p>
           </div>
 
-          {/* Nav links */}
-          <nav className="flex flex-wrap gap-x-8 gap-y-3">
-            {links.map((l) => (
-              <motion.a
-                key={l.label}
-                href={l.href}
-                {...(l.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="text-sm font-medium"
-                style={{ color: "#460C61" }}
-                whileHover={{ x: 3 }}
-                transition={{ type: "spring" as const, stiffness: 400, damping: 20 }}
-              >
-                {l.label}
-              </motion.a>
-            ))}
-          </nav>
+          <div className="grid grid-cols-2 gap-10">
+            {/* Nav links */}
+            <div>
+              <p className="mono-label mb-5" style={{ opacity: 0.7 }}>Explore</p>
+              <nav className="flex flex-col gap-1.5">
+                {links.map((l) => (
+                  <motion.a
+                    key={l.label}
+                    href={l.href}
+                    {...(l.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="self-start text-lg font-medium"
+                    whileHover={{ x: 4, color: "#FFFFFF" }}
+                    transition={{ type: "spring" as const, stiffness: 400, damping: 20 }}
+                  >
+                    {l.label}
+                  </motion.a>
+                ))}
+              </nav>
+            </div>
 
-          {/* Socials */}
-          <div className="flex items-center gap-3">
-            {socials.map((s) => (
-              <motion.a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                className="flex items-center justify-center w-9 h-9 rounded-full border transition-colors"
-                style={{ borderColor: "#E2BDFF", color: "#460C61" }}
-                whileHover={{ scale: 1.12, backgroundColor: "#F6EBFF", borderColor: "#460C61" }}
-                whileTap={{ scale: 0.92 }}
-                transition={{ type: "spring" as const, stiffness: 380, damping: 22 }}
-              >
-                {s.icon}
-              </motion.a>
-            ))}
+            {/* Socials */}
+            <div>
+              <p className="mono-label mb-5" style={{ opacity: 0.7 }}>Socials</p>
+              <div className="flex flex-col gap-1.5">
+                {socials.map((s) => (
+                  <motion.a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="self-start inline-flex items-center gap-2.5 text-lg font-medium"
+                    whileHover={{ x: 4, color: "#FFFFFF" }}
+                    transition={{ type: "spring" as const, stiffness: 400, damping: 20 }}
+                  >
+                    {s.icon}
+                    {s.label}
+                  </motion.a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="h-px w-full mb-8" style={{ backgroundColor: "#E2BDFF" }} />
+        {/* Oversized wordmark that spans the full width */}
+        <motion.p
+          aria-hidden
+          className="mt-20 select-none whitespace-nowrap font-extrabold leading-[0.85] tracking-[-0.05em] md:mt-28"
+          // the wordmark is ~8.5em wide, so this sizes it to span the gutters
+          style={{ fontSize: "min(calc((100vw - 3.6rem) / 8.6), 10rem)", color: "#E2BDFF" }}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        >
+          Girls Who Innovate
+        </motion.p>
 
         {/* Bottom row */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs" style={{ color: "#1E293B", opacity: 0.5 }}>
-          <p>© {new Date().getFullYear()} Girls Who Innovate. All rights reserved.</p>
-          <p>Built with purpose.</p>
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" style={{ opacity: 0.7 }}>
+          <p className="mono-label">© {new Date().getFullYear()} Girls Who Innovate</p>
+          <p className="mono-label">Built with purpose</p>
         </div>
 
       </div>

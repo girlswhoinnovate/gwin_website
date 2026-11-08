@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f4f1f6;
   --foreground: #1e293b;
   --brand-purple: #460c61;
+  --brand-deep: #2d0840;
   --light-purple: #e2bdff;
   --font-sans: var(--font-inter);
 }
@@ -12,6 +13,48 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ── Full-bleed page container (edge gutters instead of a narrow column) ── */
+.container-wide {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .container-wide {
+    padding-inline: 1.75rem;
+  }
+}
+
+/* ── Small uppercase monospace label used across sections ── */
+.mono-label {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* ── White GWIN logo used as a mask so it can take any color ── */
+.gwin-logo-mask {
+  -webkit-mask: url("/gwin-logo.svg") no-repeat center / contain;
+  mask: url("/gwin-logo.svg") no-repeat center / contain;
+  background-color: currentColor;
+  aspect-ratio: 4 / 1;
+}
+
+/* ── Soft vertical bands behind the hero wordmark ── */
+.hero-bands {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(70, 12, 97, 0) 0px,
+    rgba(70, 12, 97, 0.025) 60px,
+    rgba(70, 12, 97, 0) 120px
+  );
 }
 
 html {
@@ -22,6 +65,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), Inter, sans-serif;
+  /* slide-in animations start off-screen; clip (unlike hidden) keeps sticky working */
+  overflow-x: clip;
 }
 
 /* ── Scroll-progress bar ─────────────────────────────────────────────────── */

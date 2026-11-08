@@ -1,295 +1,182 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  AnimatePresence,
   motion,
-  useMotionValue,
-  useSpring,
+  useReducedMotion,
+  useScroll,
   useTransform,
-  type Variants,
 } from "framer-motion";
 
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring" as const, stiffness: 60, damping: 18 },
-  },
-};
+const letters = ["G", "W", "I", "N"];
+const photos = ["/images/1.svg", "/images/2.svg", "/images/3.svg"];
 
-const container: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.16, delayChildren: 0.05 } },
-};
-
-const sponsors: { name: string; src: string; href: string; size?: string; className?: string; row: 1 | 2 }[] = [
-  { name: "University of Virginia", src: "/images/uva_logo.png", href: "https://www.virginia.edu/", size: "w-48 h-24 sm:w-56 sm:h-28", className: "-ml-4 sm:-ml-6", row: 1 },
-  { name: "JPMorgan", src: "/images/jpm_logo.png", href: "https://www.jpmorgan.com/global", size: "w-36 h-18 sm:w-44 sm:h-22", className: "-ml-3 sm:-ml-6", row: 1 },
-  { name: "Duke University", src: "/images/duke_logo.png", href: "https://www.duke.edu/", size: "w-32 h-16 sm:w-40 sm:h-20", className: "ml-2 sm:ml-3", row: 1 },
-  { name: "iLab", src: "/images/ilab_logo.png", href: "https://www.darden.virginia.edu/batten-institute/entrepreneurship/ilab", size: "w-28 h-10 sm:w-36 sm:h-12", row: 2 },
-  { name: "Hilton", src: "/images/hilton_logo.png", href: "https://www.hilton.com/en/", size: "w-32 h-16 sm:w-40 sm:h-20", row: 2 },
+// Each step flips one letter into a photo tile; the empty steps in between
+// let the full wordmark read again before the next swap.
+const steps: ({ slot: number; photo: number } | null)[] = [
+  { slot: 0, photo: 0 },
+  null,
+  { slot: 3, photo: 1 },
+  null,
+  { slot: 1, photo: 2 },
+  null,
+  { slot: 2, photo: 0 },
+  null,
 ];
+
+const ease = [0.22, 1, 0.36, 1] as const;
+const INTRO_MS = 1600;
+const STEP_MS = 1500;
+
+// Inter's caps exactly fill a line box of 0.727em, so each slot is sized to
+// the cap height and a photo tile can sit precisely where the letter was.
+const CAP = "0.727em";
+const PAD = "0.02em";
+
+function Slot({ letter, index, photo, reduce }: { letter: string; index: number; photo: number | null; reduce: boolean }) {
+  return (
+    <span className="relative block overflow-hidden" style={{ paddingBlock: PAD }}>
+      {/* Invisible copy keeps the slot at the letter's natural width */}
+      <span className="invisible block" style={{ lineHeight: CAP }}>{letter}</span>
+
+      <AnimatePresence initial={!reduce}>
+        {photo === null ? (
+          <motion.span
+            key="letter"
+            className="absolute inset-x-0 block"
+            style={{ top: PAD, lineHeight: CAP }}
+            initial={{ y: "110%" }}
+            animate={{ y: "0%" }}
+            exit={{ y: "-110%" }}
+            transition={{ duration: 0.75, ease }}
+          >
+            {letter}
+          </motion.span>
+        ) : (
+          <motion.span
+            key={`photo-${photo}`}
+            className="absolute inset-x-[0.02em] block overflow-hidden rounded-[0.07em]"
+            style={{ top: PAD, bottom: PAD }}
+            initial={{ y: "110%" }}
+            animate={{ y: "0%" }}
+            exit={{ y: "-110%" }}
+            transition={{ duration: 0.75, ease }}
+          >
+            <motion.span
+              className="absolute inset-0 block"
+              initial={{ scale: 1.35 }}
+              animate={{ scale: 1.05 }}
+              transition={{ duration: STEP_MS / 1000 + 0.75, ease: "easeOut" }}
+            >
+              <Image
+                src={photos[photo]}
+                alt=""
+                fill
+                sizes="30vw"
+                className="object-cover"
+                unoptimized
+                priority={index === 0}
+              />
+            </motion.span>
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </span>
+  );
+}
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion() ?? false;
+  const [step, setStep] = useState(-1);
 
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const springX = useSpring(rawX, { stiffness: 45, damping: 22 });
-  const springY = useSpring(rawY, { stiffness: 45, damping: 22 });
-  const imgX = useTransform(springX, [-1, 1], [-12, 12]);
-  const imgY = useTransform(springY, [-1, 1], [-8, 8]);
+  useEffect(() => {
+    if (reduce) return;
+    let interval: ReturnType<typeof setInterval>;
+    const start = setTimeout(() => {
+      setStep(0);
+      interval = setInterval(() => setStep((s) => (s + 1) % steps.length), STEP_MS);
+    }, INTRO_MS);
+    return () => {
+      clearTimeout(start);
+      clearInterval(interval);
+    };
+  }, [reduce]);
 
-  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
-    const rect = sectionRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    rawX.set(((e.clientX - rect.left) / rect.width) * 2 - 1);
-    rawY.set(((e.clientY - rect.top) / rect.height) * 2 - 1);
-  }
+  // As the hero scrolls away the wordmark drifts up, shrinks and blurs out.
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const markY = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
+  const markScale = useTransform(scrollYProgress, [0, 1], [1, 0.82]);
+  const markOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const markBlur = useTransform(scrollYProgress, [0, 0.8], ["blur(0px)", "blur(14px)"]);
 
-  function handleMouseLeave() {
-    rawX.set(0);
-    rawY.set(0);
-  }
+  const active = step >= 0 ? steps[step] : null;
 
   return (
     <section
       ref={sectionRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative bg-white overflow-hidden min-h-screen flex flex-col"
+      className="hero-bands relative flex h-[100svh] min-h-[560px] flex-col overflow-hidden"
     >
-      {/* Dot-grid texture */}
-      <svg
-        aria-hidden
-        className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.05]"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <pattern id="dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="1.5" fill="#E2BDFF" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#dots)" />
-      </svg>
-
-      {/* Halo top-right */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-[0.18] -translate-y-1/4 translate-x-1/4"
-        style={{ backgroundColor: "#E2BDFF", x: useTransform(springX, [-1, 1], [6, -6]), y: useTransform(springY, [-1, 1], [4, -4]) }}
-      />
-
-      {/* Halo bottom-left */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-3xl opacity-[0.12] translate-y-1/3 -translate-x-1/4"
-        style={{ backgroundColor: "#E2BDFF" }}
-      />
-
-      {/* Main grid */}
-      <div className="relative z-10 flex-1 flex items-center w-full">
-      <div className="mx-auto max-w-5xl w-full px-6 pt-20 pb-10 grid lg:grid-cols-2 gap-10 items-center">
-
-        {/* ── Left column — text ── */}
+      <div className="relative flex flex-1 items-center justify-center">
         <motion.div
-          className="flex flex-col items-start gap-5 text-left"
-          variants={container}
-          initial="hidden"
-          animate="visible"
+          className="flex flex-col items-center"
+          style={reduce ? undefined : { y: markY, scale: markScale, opacity: markOpacity, filter: markBlur }}
         >
-          {/* Headline */}
-          <motion.h1
-            variants={fadeUp}
-            className="text-5xl sm:text-6xl font-extrabold leading-[1.08] tracking-tight"
-            style={{ color: "#460C61" }}
+          <h1
+            aria-label="GWIN — Girls Who Innovate"
+            className="flex select-none font-extrabold tracking-[-0.045em]"
+            style={{ color: "#460C61", fontSize: "clamp(6rem, 27vw, 17rem)", lineHeight: CAP }}
           >
-            Empowering the{" "}
-            <span className="relative inline-block">
-              Next Generation
+            {letters.map((letter, i) => (
               <motion.span
-                className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full"
-                style={{ backgroundColor: "#E2BDFF" }}
-                initial={{ scaleX: 0, originX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 1, duration: 0.7, ease: "easeOut" }}
-              />
-            </span>{" "}
-            of Female Entrepreneurs.
-          </motion.h1>
-
-          {/* Sub-headline */}
-          <motion.p
-            variants={fadeUp}
-            className="max-w-md text-base leading-relaxed"
-            style={{ color: "#7A4A8A" }}
-          >
-            Through bootcamps, competitions, and networking, we build the next
-            generation of female entrepreneurs — giving girls the
-            tools, community, and confidence to turn ideas into impact.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            className="flex flex-row flex-wrap justify-start gap-3"
-            variants={fadeUp}
-          >
-            <motion.a
-              href="#programs"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold border-2"
-              style={{ borderColor: "#E2BDFF", color: "#460C61", backgroundColor: "transparent" }}
-              whileHover={{ backgroundColor: "#F6EBFF" }}
-              whileTap={{ scale: 0.96 }}
-            >
-              Explore Programs
-            </motion.a>
-          </motion.div>
-        </motion.div>
-
-        {/* ── Right column — photo ── */}
-        <motion.div
-          className="relative hidden lg:flex items-center justify-center py-6"
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7, delay: 0.3, type: "spring" as const, stiffness: 55, damping: 18 }}
-        >
-          {/* Shadow card */}
-          <motion.div
-            className="absolute inset-6 rounded-3xl"
-            style={{
-              backgroundColor: "#E2BDFF",
-              opacity: 0.35,
-              rotate: -2,
-              x: useTransform(springX, [-1, 1], [8, -8]),
-              y: useTransform(springY, [-1, 1], [5, -5]),
-            }}
-          />
-
-          {/* Photo */}
-          <motion.div
-            className="relative rounded-3xl overflow-hidden shadow-xl w-full max-w-sm aspect-[3/4]"
-            style={{ x: imgX, y: imgY, rotate: 1.5 }}
-            animate={{ y: [0, -8, 0] }}
-            transition={{
-              y: { duration: 5, repeat: Infinity, ease: "easeInOut", repeatType: "mirror" },
-            }}
-          >
-            <Image
-              src="/images/1.svg"
-              alt="Girls Who Innovate — students at our entrepreneurship bootcamp"
-              fill
-              className="object-cover object-center"
-              unoptimized
-              priority
-            />
-          </motion.div>
-
-          {/* Badge — Girls Impacted */}
-          <motion.div
-            className="absolute bottom-8 left-2 flex items-center gap-2 px-4 py-2 rounded-2xl shadow-lg"
-            style={{ backgroundColor: "#460C61" }}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: [0, -6, 0] }}
-            transition={{
-              opacity: { duration: 0.5, delay: 1.1 },
-              y: { duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 1.2, repeatType: "mirror" },
-            }}
-            whileHover={{ scale: 1.06 }}
-          >
-            <span className="text-lg font-extrabold text-white">700+</span>
-            <span className="text-xs font-semibold leading-tight text-white opacity-80">Girls<br />Impacted</span>
-          </motion.div>
-
-          {/* Badge — Schools Reached */}
-          <motion.div
-            className="absolute top-8 right-2 flex items-center gap-2 px-4 py-2 rounded-2xl shadow-lg"
-            style={{ backgroundColor: "#F6EBFF", border: "1.5px solid #E2BDFF" }}
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: [0, -8, 0] }}
-            transition={{
-              opacity: { duration: 0.5, delay: 1.3 },
-              y: { duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 0.6, repeatType: "mirror" },
-            }}
-            whileHover={{ scale: 1.06 }}
-          >
-            <span className="text-lg font-extrabold" style={{ color: "#460C61" }}>43</span>
-            <span className="text-xs font-semibold leading-tight" style={{ color: "#7A4A8A" }}>Schools<br />Reached</span>
-          </motion.div>
-        </motion.div>
-
-      </div>
-      </div>
-
-      {/* Supported by */}
-      <div className="relative z-10 pb-28 sm:pb-36">
-        <motion.div
-          className="mx-auto max-w-5xl px-6 flex flex-col items-center gap-4"
-          variants={container}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.span
-            variants={fadeUp}
-            className="text-xs font-semibold tracking-widest uppercase"
-            style={{ color: "#7A4A8A" }}
-          >
-            Supported By
-          </motion.span>
-          <div className="flex flex-col items-center gap-y-4 sm:gap-y-6">
-            {[1, 2].map((row) => (
-              <div
-                key={row}
-                className={`flex flex-wrap items-center justify-center ${
-                  row === 1 ? "gap-x-10 sm:gap-x-16" : "gap-x-8 sm:gap-x-12"
-                }`}
+                key={letter + i}
+                className="block"
+                initial={reduce ? false : { y: "40%", opacity: 0, filter: "blur(10px)" }}
+                animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
+                transition={{ duration: 1, ease, delay: 0.15 + i * 0.09 }}
               >
-                {sponsors
-                  .filter((sponsor) => sponsor.row === row)
-                  .map((sponsor) => (
-                    <motion.a
-                      key={sponsor.name}
-                      href={sponsor.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={sponsor.name}
-                      variants={fadeUp}
-                      className={`relative block transition-transform duration-300 hover:scale-110 ${sponsor.size ?? "w-40 h-20 sm:w-48 sm:h-24"} ${sponsor.className ?? ""}`}
-                    >
-                      <Image
-                        src={sponsor.src}
-                        alt={sponsor.name}
-                        fill
-                        className="object-contain"
-                        unoptimized
-                      />
-                    </motion.a>
-                  ))}
-              </div>
+                <Slot
+                  letter={letter}
+                  index={i}
+                  photo={active && active.slot === i ? active.photo : null}
+                  reduce={reduce}
+                />
+              </motion.span>
             ))}
-          </div>
+          </h1>
+
+          <motion.p
+            className="mono-label mt-5 text-[13px] md:mt-7 md:text-sm"
+            style={{ color: "#7A4A8A" }}
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease, delay: 0.8 }}
+          >
+            [ Girls Who Innovate ]
+          </motion.p>
         </motion.div>
       </div>
 
-      {/* Scroll hint */}
+      {/* Corner captions */}
       <motion.div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5"
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.6, duration: 0.6 }}
+        className="container-wide relative flex items-end justify-between gap-6 pb-6 md:pb-7"
+        initial={reduce ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.1 }}
       >
-        <span className="text-[10px] font-semibold uppercase tracking-[0.2em]" style={{ color: "#7A4A8A" }}>
-          Scroll
-        </span>
-        <motion.div
-          className="w-px h-10 rounded-full"
-          style={{ backgroundColor: "#E2BDFF" }}
-          animate={{ scaleY: [0.4, 1, 0.4], opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-        />
+        <p className="mono-label max-w-[14rem] leading-snug md:max-w-none" style={{ color: "#2D0840" }}>
+          Empowering the next generation of female entrepreneurs
+        </p>
+        <p className="mono-label hidden shrink-0 sm:flex items-center gap-4" style={{ color: "#2D0840" }}>
+          <span>700+ girls</span>
+          <span>43 schools</span>
+        </p>
+        <a href="#intro" className="mono-label shrink-0 sm:hidden" style={{ color: "#2D0840" }} aria-label="Scroll down">
+          Scroll ↓
+        </a>
       </motion.div>
-
     </section>
   );
 }

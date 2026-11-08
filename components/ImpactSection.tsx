@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import { motion, useInView, useMotionValue, useTransform, animate, type Variants } from "framer-motion";
+import SectionHeader from "@/components/SectionHeader";
 
 // ─── Count-up ─────────────────────────────────────────────────────────────────
 
@@ -66,40 +67,23 @@ const stagger: Variants = {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function ImpactSection() {
-  const headerRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const highlightsRef = useRef<HTMLDivElement>(null);
 
-  const headerInView = useInView(headerRef, { once: true, margin: "-60px" });
   const statsInView = useInView(statsRef, { once: true, margin: "-60px" });
   const highlightsInView = useInView(highlightsRef, { once: true, margin: "-60px" });
 
   return (
-    <section id="impact" className="py-14 px-6" style={{ backgroundColor: "#460C61" }}>
-      <div className="mx-auto max-w-5xl space-y-10">
+    <section id="impact" className="py-20 md:py-28" style={{ backgroundColor: "#460C61" }}>
+      <div className="container-wide space-y-14">
 
-        {/* Header */}
-        <motion.div
-          ref={headerRef}
-          initial={{ opacity: 0, y: 28 }}
-          animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55 }}
-          className="text-center"
-        >
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em]" style={{ color: "#E2BDFF" }}>
-            Our Traction
-          </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white">
-            The Impact So Far
-          </h2>
-          <motion.div
-            className="mx-auto mt-4 h-1 rounded-full"
-            style={{ backgroundColor: "#E2BDFF" }}
-            initial={{ width: 0 }}
-            animate={headerInView ? { width: 64 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          />
-        </motion.div>
+        <SectionHeader
+          index="04"
+          label="Our traction"
+          title="Impact"
+          blurb="The numbers so far — and we're just getting started."
+          dark
+        />
 
         {/* Traction stats */}
         <motion.div
@@ -128,7 +112,7 @@ export default function ImpactSection() {
           variants={stagger}
           initial="hidden"
           animate={highlightsInView ? "visible" : "hidden"}
-          className="rounded-2xl p-8 md:p-10 grid sm:grid-cols-2 gap-5"
+          className="rounded-[32px] p-8 md:p-10 grid sm:grid-cols-2 gap-5"
           style={{ backgroundColor: "rgba(255,255,255,0.06)", border: "1px solid rgba(226,189,255,0.2)" }}
         >
           {highlights.map((h) => (
@@ -161,7 +145,7 @@ export default function ImpactSection() {
               href="https://docs.google.com/forms/d/e/1FAIpQLScoSynXmACCTkW-78iiN67yZadcOUoRjsJHt4rcaIplU62rSQ/viewform?usp=send_form"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full mono-label text-sm"
               style={{ backgroundColor: "#E2BDFF", color: "#460C61" }}
               whileHover={{ scale: 1.05, backgroundColor: "#FFFFFF" }}
               whileTap={{ scale: 0.96 }}
