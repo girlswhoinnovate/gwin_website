@@ -18,7 +18,7 @@ export default function ChaptersSection() {
           index="02"
           label="Where we are"
           title="Chapters"
-          blurb="GWIN chapters bring our curriculum to high schools nationwide, while university partners connect us with college communities. Search the list or explore the map to find one near you."
+          blurb="Student-led chapters and university partners across the country. Find one near you."
         >
           <motion.a
             href="https://forms.gle/abyXShxxPMKYR8To6"

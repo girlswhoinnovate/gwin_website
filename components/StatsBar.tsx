@@ -7,7 +7,6 @@ import { useRef, useEffect } from "react";
 
 interface Stat {
   value: number;
-  prefix?: string;
   suffix: string;
   label: string;
   sublabel?: string;
@@ -15,12 +14,10 @@ interface Stat {
 
 // ─── Count-up ─────────────────────────────────────────────────────────────────
 
-function CountUp({ value, prefix = "", suffix }: Pick<Stat, "value" | "prefix" | "suffix">) {
+function CountUp({ value, suffix }: Pick<Stat, "value" | "suffix">) {
   const count = useMotionValue(0);
   const isDecimal = value % 1 !== 0;
-  const display = useTransform(count, (v) =>
-    `${prefix}${isDecimal ? v.toFixed(1) : Math.round(v)}${suffix}`
-  );
+  const display = useTransform(count, (v) => `${isDecimal ? v.toFixed(1) : Math.round(v)}${suffix}`);
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
 
@@ -31,44 +28,6 @@ function CountUp({ value, prefix = "", suffix }: Pick<Stat, "value" | "prefix" |
   }, [inView, count, value]);
 
   return <motion.span ref={ref}>{display}</motion.span>;
-}
-
-// ─── Stat card ────────────────────────────────────────────────────────────────
-
-function StatCard({ stat, index, dark }: { stat: Stat; index: number; dark?: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay: index * 0.1 }}
-      className="flex flex-col items-center justify-start text-center px-6 py-6"
-    >
-      <span
-        className="text-4xl md:text-5xl font-extrabold tabular-nums leading-none"
-        style={{ color: dark ? "#FFFFFF" : "#460C61" }}
-      >
-        <CountUp value={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-      </span>
-      <span
-        className="mt-3 text-sm font-semibold uppercase tracking-wide leading-snug"
-        style={{ color: dark ? "#E2BDFF" : "#1E293B" }}
-      >
-        {stat.label}
-      </span>
-      {stat.sublabel && (
-        <span
-          className="mt-1 text-xs leading-snug"
-          style={{ color: dark ? "#E2BDFF" : "#1E293B", opacity: 0.7 }}
-        >
-          {stat.sublabel}
-        </span>
-      )}
-    </motion.div>
-  );
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -92,43 +51,54 @@ const industryStats: Stat[] = [
   },
 ];
 
-// ─── Section header ───────────────────────────────────────────────────────────
-
-function SectionLabel({ text, dark }: { text: string; dark?: boolean }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
-
-  return (
-    <motion.p
-      ref={ref}
-      initial={{ opacity: 0, y: 12 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.45 }}
-      className="mb-8 mono-label"
-      style={{ color: dark ? "#E2BDFF" : "#460C61" }}
-    >
-      {text}
-    </motion.p>
-  );
-}
+const ease = [0.22, 1, 0.36, 1] as const;
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function StatsBar() {
   return (
-    <>
-      {/* Row 1 — Industry stats — white background */}
-      <section className="py-14 md:py-20">
-        <div className="container-wide">
-          <SectionLabel text="Female Entrepreneurship in Numbers" />
-          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#E2BDFF]">
-            {industryStats.map((stat, i) => (
-              <StatCard key={stat.label} stat={stat} index={i} />
-            ))}
-          </div>
-        </div>
-      </section>
+    <section className="py-20 md:py-28">
+      <div className="container-wide">
+        <motion.h2
+          className="mb-12 max-w-2xl font-bold leading-[1.05] tracking-[-0.03em] md:mb-16"
+          style={{ color: "#2D0840", fontSize: "clamp(1.75rem, 3.2vw, 2.75rem)" }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.8, ease }}
+        >
+          Female founders are still the exception. We&rsquo;re changing that.
+        </motion.h2>
 
-    </>
+        <div className="grid gap-10 md:grid-cols-3 md:gap-8">
+          {industryStats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              className="border-t pt-6"
+              style={{ borderColor: "#E2BDFF" }}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.7, ease, delay: i * 0.1 }}
+            >
+              <span
+                className="block font-extrabold leading-none tracking-[-0.04em] tabular-nums"
+                style={{ color: "#460C61", fontSize: "clamp(3.5rem, 7vw, 6rem)" }}
+              >
+                <CountUp value={stat.value} suffix={stat.suffix} />
+              </span>
+              <span className="mt-4 block max-w-[16rem] text-base leading-snug" style={{ color: "#1E293B", opacity: 0.7 }}>
+                {stat.label}
+              </span>
+              {stat.sublabel && (
+                <span className="mono-label mt-3 block text-[11px]" style={{ color: "#7A4A8A" }}>
+                  {stat.sublabel}
+                </span>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

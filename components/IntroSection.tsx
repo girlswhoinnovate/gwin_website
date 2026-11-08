@@ -81,8 +81,7 @@ export default function IntroSection() {
               transition={{ duration: 0.8, ease, delay: 0.3 }}
             >
               <p className="max-w-md text-lg leading-snug" style={{ color: "rgba(226,189,255,0.8)" }}>
-                Through bootcamps, competitions, and networking, we give girls the tools, community,
-                and confidence to turn ideas into impact.
+                Bootcamps, competitions, and a community that turns ideas into impact.
               </p>
               <motion.a
                 href="#programs"
