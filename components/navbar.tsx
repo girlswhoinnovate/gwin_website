@@ -96,7 +96,6 @@ export default function Navbar() {
               transition={{ duration: 0.4, ease }}
             >
               Join Us
-              <Arrow />
             </motion.a>
 
             <button
@@ -152,7 +151,6 @@ export default function Navbar() {
                   style={{ backgroundColor: "#E2BDFF", color: "#2D0840" }}
                 >
                   Join the Movement
-                  <Arrow />
                 </a>
               </div>
             </motion.div>

@@ -55,7 +55,6 @@ export default function ProgramsSection() {
           index="01"
           label="What we offer"
           title="Programs"
-          blurb="Three ways to start building."
         />
 
         {/* Expandable rows — one program open at a time */}
@@ -164,9 +163,6 @@ export default function ProgramsSection() {
                               whileTap={{ scale: 0.96 }}
                             >
                               {program.cta}
-                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                              </svg>
                             </motion.a>
                             {program.status && (
                               <span className="mono-label text-[11px]" style={{ color: "#7A4A8A" }}>
