@@ -42,7 +42,7 @@ const line = "rgba(226,189,255,0.2)";
 
 export default function ImpactSection() {
   return (
-    <section id="impact" className="py-20 md:py-28" style={{ backgroundColor: "#460C61" }}>
+    <section id="impact" className="py-20 md:py-28" style={{ backgroundColor: "#2D0840" }}>
       <div className="container-wide">
         <SectionHeader
           index="04"

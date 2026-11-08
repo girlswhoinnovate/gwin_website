@@ -23,7 +23,7 @@ const programs = [
   {
     id: "chapters",
     title: "High School Chapters",
-    tags: ["Student-run", "Any school", "Free"],
+    tags: ["Student-run", "Any school"],
     description:
       "Start a GWIN club at your school, powered by our curriculum, speaker network, and competitions.",
     cta: "Start a chapter",
@@ -33,7 +33,7 @@ const programs = [
   {
     id: "network",
     title: "Online Network",
-    tags: ["Free", "All ages", "Year-round"],
+    tags: ["All ages", "Year-round"],
     description:
       "Peers, mentors, and founders across 43+ schools — so you never have to build alone.",
     cta: "Join the network",
@@ -86,16 +86,8 @@ export default function ProgramsSection() {
                   >
                     {program.title}
                   </span>
-                  <span className="hidden gap-2 md:flex">
-                    {program.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="mono-label rounded-full border px-3 py-2 text-[11px]"
-                        style={{ borderColor: "#E2BDFF", color: "#460C61" }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  <span className="mono-label hidden text-[11px] md:block" style={{ color: "#7A4A8A" }}>
+                    {program.tags.join(" · ")}
                   </span>
                   <motion.span
                     className="flex h-10 w-10 items-center justify-center rounded-full border md:h-12 md:w-12"
@@ -130,27 +122,17 @@ export default function ProgramsSection() {
                             {program.description}
                           </p>
 
-                          <div className="flex flex-wrap gap-2">
-                            {/* Tags live in the row header on desktop */}
-                            {program.tags.map((tag) => (
-                              <span
-                                key={tag}
-                                className="mono-label rounded-full border px-3 py-2 text-[11px] md:hidden"
-                                style={{ borderColor: "#E2BDFF", color: "#460C61" }}
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                            {program.prizes?.map((prize) => (
-                              <span
-                                key={prize}
-                                className="mono-label rounded-full px-3 py-2 text-[11px]"
-                                style={{ backgroundColor: "#FFFFFF", color: "#460C61" }}
-                              >
-                                {prize}
-                              </span>
-                            ))}
-                          </div>
+                          {/* Tags live in the row header on desktop */}
+                          <p className="mono-label text-[11px] md:hidden" style={{ color: "#7A4A8A" }}>
+                            {program.tags.join(" · ")}
+                          </p>
+                          {program.prizes && (
+                            <p className="mono-label text-[11px] leading-relaxed" style={{ color: "#460C61" }}>
+                              <span style={{ color: "#7A4A8A" }}>Prizes</span>
+                              <span className="mx-2" style={{ color: "#7A4A8A" }}>—</span>
+                              {program.prizes.join(" · ")}
+                            </p>
+                          )}
 
                           <div className="flex flex-wrap items-center gap-4">
                             <motion.a

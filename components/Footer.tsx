@@ -54,7 +54,11 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="overflow-hidden pt-16 pb-6 md:pt-20 md:pb-7" style={{ backgroundColor: "#2D0840", color: "#E2BDFF" }}>
+    <footer
+      // A deeper shade than the Impact band so the two dark sections read as separate
+      className="overflow-hidden pt-16 pb-6 md:pt-20 md:pb-7"
+      style={{ backgroundColor: "#1A0626", color: "#E2BDFF" }}
+    >
       <div className="container-wide">
 
         <div className="grid gap-12 md:grid-cols-2">
