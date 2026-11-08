@@ -17,7 +17,7 @@ const programs = [
     prizes: ["$500 1st", "$250 2nd", "$100 3rd"],
     status: "Summer 2027 applications opening soon",
     cta: "Stay tuned",
-    ctaHref: "https://discord.gg/NG9zSSeHZC",
+    ctaHref: "https://discord.gg/HhHcCR8NYj",
     image: "/images/3.svg",
   },
   {
@@ -37,7 +37,7 @@ const programs = [
     description:
       "Peers, mentors, and founders across 43+ schools — so you never have to build alone.",
     cta: "Join the network",
-    ctaHref: "https://discord.gg/NG9zSSeHZC",
+    ctaHref: "https://discord.gg/HhHcCR8NYj",
   },
 ];
 

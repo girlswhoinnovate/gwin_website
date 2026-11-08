@@ -82,7 +82,7 @@ export default function Navbar() {
           {/* CTA + mobile toggle */}
           <div className="flex items-center justify-end gap-3">
             <motion.a
-              href="https://discord.gg/NG9zSSeHZC"
+              href="https://discord.gg/HhHcCR8NYj"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden md:inline-flex items-center gap-2 rounded-full px-5 py-2.5 mono-label text-[13px]"
