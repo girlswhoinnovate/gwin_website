@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -10,76 +9,95 @@ import {
   useTransform,
 } from "framer-motion";
 
-const letters = ["G", "W", "I", "N"];
-const photos = ["/images/1.svg", "/images/2.svg", "/images/3.svg"];
-
-// Each step flips one letter into a photo tile; the empty steps in between
-// let the full wordmark read again before the next swap.
-const steps: ({ slot: number; photo: number } | null)[] = [
-  { slot: 0, photo: 0 },
-  null,
-  { slot: 3, photo: 1 },
-  null,
-  { slot: 1, photo: 2 },
-  null,
-  { slot: 2, photo: 0 },
-  null,
+// Each group of letters rolls over to the word it stands for, sized to the
+// exact width of those letters. "IN" is one group so "Innovate" spans both.
+const groups = [
+  { letters: "G", word: "Girls" },
+  { letters: "W", word: "Who" },
+  { letters: "IN", word: "Innovate" },
 ];
+
+// Which groups show their word at each step: the words build up one by one
+// to read "Girls Who Innovate", hold, then all roll back to "GWIN".
+const steps: number[][] = [[], [0], [0, 1], [0, 1, 2], [0, 1, 2], []];
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const INTRO_MS = 1600;
-const STEP_MS = 1500;
+const STEP_MS = 1300;
 
 // Inter's caps exactly fill a line box of 0.727em, so each slot is sized to
-// the cap height and a photo tile can sit precisely where the letter was.
+// the cap height and the letters can roll cleanly in and out of it.
 const CAP = "0.727em";
 const PAD = "0.02em";
+// Set on the word itself (not inherited) so it scales with the word's own size
+const WORD_TRACKING = "-0.03em";
 
-function Slot({ letter, index, photo, reduce }: { letter: string; index: number; photo: number | null; reduce: boolean }) {
+function Slot({
+  letters,
+  word,
+  showWord,
+  wordSize,
+  onMeasure,
+  reduce,
+}: {
+  letters: string;
+  word: string;
+  showWord: boolean;
+  wordSize: number;
+  onMeasure: (fit: number) => void;
+  reduce: boolean;
+}) {
+  const sizerRef = useRef<HTMLSpanElement>(null);
+  const probeRef = useRef<HTMLSpanElement>(null);
+
+  useLayoutEffect(() => {
+    // Reports the largest font size (in em) at which this word still fits
+    // within its letters. Both widths scale with the h1's font size, so this
+    // only needs redoing once the web font has loaded and changed the metrics.
+    const measure = () => {
+      const sizer = sizerRef.current;
+      const probe = probeRef.current;
+      // 0.88 leaves a little air on each side so neighbouring words don't touch
+      if (sizer && probe && probe.offsetWidth > 0) onMeasure((sizer.offsetWidth * 0.88) / probe.offsetWidth);
+    };
+    measure();
+    document.fonts?.ready.then(measure);
+  }, [onMeasure]);
+
   return (
     <span className="relative block overflow-hidden" style={{ paddingBlock: PAD }}>
-      {/* Invisible copy keeps the slot at the letter's natural width */}
-      <span className="invisible block" style={{ lineHeight: CAP }}>{letter}</span>
+      {/* Invisible copy keeps the slot at the letters' natural width */}
+      <span ref={sizerRef} className="invisible block whitespace-nowrap" style={{ lineHeight: CAP }}>{letters}</span>
+      {/* Invisible 1em copy of the word, used only to measure its width */}
+      <span ref={probeRef} aria-hidden className="invisible absolute left-0 top-0 whitespace-nowrap" style={{ lineHeight: 1, letterSpacing: WORD_TRACKING }}>
+        {word}
+      </span>
 
       <AnimatePresence initial={!reduce}>
-        {photo === null ? (
+        {showWord ? (
           <motion.span
-            key="letter"
-            className="absolute inset-x-0 block"
+            key="word"
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ y: "110%" }}
+            animate={{ y: "0%" }}
+            exit={{ y: "-110%" }}
+            transition={{ duration: 0.75, ease }}
+          >
+            <span className="block whitespace-nowrap" style={{ fontSize: `${wordSize}em`, lineHeight: 1, letterSpacing: WORD_TRACKING }}>
+              {word}
+            </span>
+          </motion.span>
+        ) : (
+          <motion.span
+            key="letters"
+            className="absolute inset-x-0 block whitespace-nowrap"
             style={{ top: PAD, lineHeight: CAP }}
             initial={{ y: "110%" }}
             animate={{ y: "0%" }}
             exit={{ y: "-110%" }}
             transition={{ duration: 0.75, ease }}
           >
-            {letter}
-          </motion.span>
-        ) : (
-          <motion.span
-            key={`photo-${photo}`}
-            className="absolute inset-x-[0.02em] block overflow-hidden rounded-[0.07em]"
-            style={{ top: PAD, bottom: PAD }}
-            initial={{ y: "110%" }}
-            animate={{ y: "0%" }}
-            exit={{ y: "-110%" }}
-            transition={{ duration: 0.75, ease }}
-          >
-            <motion.span
-              className="absolute inset-0 block"
-              initial={{ scale: 1.35 }}
-              animate={{ scale: 1.05 }}
-              transition={{ duration: STEP_MS / 1000 + 0.75, ease: "easeOut" }}
-            >
-              <Image
-                src={photos[photo]}
-                alt=""
-                fill
-                sizes="30vw"
-                className="object-cover"
-                unoptimized
-                priority={index === 0}
-              />
-            </motion.span>
+            {letters}
           </motion.span>
         )}
       </AnimatePresence>
@@ -91,6 +109,18 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion() ?? false;
   const [step, setStep] = useState(-1);
+
+  // All words share one size: the smallest of the per-word fits, so every
+  // word still fits within its own letters.
+  const [fits, setFits] = useState<number[]>(() => groups.map(() => 0.25));
+  const wordSize = Math.min(...fits);
+  const measureCallbacks = useMemo(
+    () =>
+      groups.map((_, i) => (fit: number) =>
+        setFits((prev) => (prev[i] === fit ? prev : prev.map((f, j) => (j === i ? fit : f))))
+      ),
+    []
+  );
 
   useEffect(() => {
     if (reduce) return;
@@ -112,7 +142,7 @@ export default function Hero() {
   const markOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const markBlur = useTransform(scrollYProgress, [0, 0.8], ["blur(0px)", "blur(14px)"]);
 
-  const active = step >= 0 ? steps[step] : null;
+  const showing = step >= 0 ? steps[step] : [];
 
   return (
     <section
@@ -129,18 +159,20 @@ export default function Hero() {
             className="flex select-none font-extrabold tracking-[-0.045em]"
             style={{ color: "#460C61", fontSize: "clamp(6rem, 27vw, 17rem)", lineHeight: CAP }}
           >
-            {letters.map((letter, i) => (
+            {groups.map((group, i) => (
               <motion.span
-                key={letter + i}
+                key={group.letters}
                 className="block"
                 initial={reduce ? false : { y: "40%", opacity: 0, filter: "blur(10px)" }}
                 animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
                 transition={{ duration: 1, ease, delay: 0.15 + i * 0.09 }}
               >
                 <Slot
-                  letter={letter}
-                  index={i}
-                  photo={active && active.slot === i ? active.photo : null}
+                  letters={group.letters}
+                  word={group.word}
+                  showWord={showing.includes(i)}
+                  wordSize={wordSize}
+                  onMeasure={measureCallbacks[i]}
                   reduce={reduce}
                 />
               </motion.span>
