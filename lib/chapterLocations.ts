@@ -104,4 +104,14 @@ export const locations: ChapterLocation[] = [
     kind: "hub",
     icon: "/images/columbia_mini.png",
   },
+  {
+    id: "berkeley",
+    name: "UC Berkeley",
+    school: "University of California, Berkeley",
+    city: "Berkeley",
+    state: "CA",
+    coordinates: [-122.2585, 37.8719],
+    kind: "hub",
+    icon: "/images/cal_mini.png",
+  },
 ];
