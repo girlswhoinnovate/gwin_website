@@ -106,8 +106,8 @@ function Tooltip({
 
 export function LocationCard({ location }: { location: ChapterLocation }) {
   return (
-    <div className="flex w-full items-center gap-3 rounded-2xl bg-white px-3 py-2.5">
-      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl" style={{ backgroundColor: "#F4F1F6" }}>
+    <div className="flex w-full items-center gap-3 bg-white px-3 py-2.5">
+      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center" style={{ backgroundColor: "#F4F1F6" }}>
         <span className="relative h-6 w-6">
           {location.icon ? (
             <Image
@@ -217,7 +217,7 @@ export default function ChaptersMap({
   const zoomOut = () => animateZoom((z) => Math.max(z / 1.5, MIN_ZOOM));
 
   return (
-    <div className="relative w-full rounded-[24px] p-3 sm:p-5" style={{ backgroundColor: "#F4F1F6" }}>
+    <div className="relative w-full p-3 sm:p-5" style={{ backgroundColor: "#F4F1F6" }}>
       <ComposableMap
         ref={svgRef}
         projection="geoAlbersUsa"
@@ -316,7 +316,7 @@ export default function ChaptersMap({
       </ComposableMap>
 
       {/* Zoom controls */}
-      <div className="absolute bottom-4 right-4 flex flex-col overflow-hidden rounded-full bg-white shadow-[0_6px_20px_rgba(45,8,64,0.08)] sm:bottom-5 sm:right-5">
+      <div className="absolute bottom-4 right-4 flex flex-col overflow-hidden bg-white shadow-[0_6px_20px_rgba(45,8,64,0.08)] sm:bottom-5 sm:right-5">
         <ZoomButton onClick={zoomIn} disabled={zoom >= MAX_ZOOM} label="Zoom in">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25}>
             <path strokeLinecap="round" d="M12 5v14M5 12h14" />

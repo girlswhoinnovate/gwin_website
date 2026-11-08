@@ -28,7 +28,7 @@ export default function ChaptersPage() {
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight" style={{ color: "#1E293B" }}>
               Chapters
             </h1>
-            <div className="mx-auto mt-4 h-1 w-16 rounded-full" style={{ backgroundColor: "#460C61" }} />
+            <div className="mx-auto mt-4 h-1 w-16" style={{ backgroundColor: "#460C61" }} />
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed" style={{ color: "#1E293B", opacity: 0.75 }}>
               GWIN chapters bring our entrepreneurship curriculum to high schools nationwide, while
               our university partners connect us with college communities across the country.

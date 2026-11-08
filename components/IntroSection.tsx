@@ -48,7 +48,7 @@ export default function IntroSection() {
   const textInView = useInView(textRef, { once: true, margin: "-80px" });
   const sponsorsInView = useInView(sponsorsRef, { once: true, margin: "-60px" });
 
-  // Slow parallax on the photo inside its rounded frame
+  // Slow parallax on the photo inside its frame
   const { scrollYProgress } = useScroll({ target: photoRef, offset: ["start end", "end start"] });
   const photoY = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
 
@@ -125,7 +125,7 @@ export default function IntroSection() {
           {/* Photo */}
           <motion.div
             ref={photoRef}
-            className="relative aspect-[4/5] w-full overflow-hidden rounded-[32px] lg:aspect-[5/6]"
+            className="relative aspect-[4/5] w-full overflow-hidden lg:aspect-[5/6]"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -141,12 +141,12 @@ export default function IntroSection() {
               />
             </motion.div>
 
-            {/* Stat tags, styled like the mono pills on the example's work cards */}
+            {/* Square stat tags in the mono label style */}
             <div className="absolute left-5 top-5 flex flex-wrap gap-2">
-              <span className="mono-label rounded-full bg-white/90 px-3 py-2 text-[11px]" style={{ color: "#2D0840" }}>
+              <span className="mono-label bg-white/90 px-3 py-2 text-[11px]" style={{ color: "#2D0840" }}>
                 700+ girls impacted
               </span>
-              <span className="mono-label rounded-full bg-white/90 px-3 py-2 text-[11px]" style={{ color: "#2D0840" }}>
+              <span className="mono-label bg-white/90 px-3 py-2 text-[11px]" style={{ color: "#2D0840" }}>
                 43 schools reached
               </span>
             </div>
@@ -156,7 +156,7 @@ export default function IntroSection() {
         {/* Supported by */}
         <motion.div
           ref={sponsorsRef}
-          className="mt-16 flex flex-col items-center gap-5 rounded-[32px] px-6 py-10 md:mt-24"
+          className="mt-16 flex flex-col items-center gap-5 px-6 py-10 md:mt-24"
           style={{ backgroundColor: "#F4F1F6" }}
           initial={{ opacity: 0, y: 30 }}
           animate={sponsorsInView ? { opacity: 1, y: 0 } : {}}

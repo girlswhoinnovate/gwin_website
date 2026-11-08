@@ -27,7 +27,7 @@ export default function AboutSection() {
         {/* ── Statement + photo ── */}
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
           <motion.div
-            className="relative aspect-[4/3] w-full overflow-hidden rounded-[32px]"
+            className="relative aspect-[4/3] w-full overflow-hidden"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}

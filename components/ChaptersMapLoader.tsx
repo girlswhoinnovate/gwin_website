@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 const ChaptersMap = dynamic(() => import("@/components/ChaptersMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full aspect-[4/3] rounded-[24px] animate-pulse" style={{ backgroundColor: "#F4F1F6" }} />
+    <div className="w-full aspect-[4/3] animate-pulse" style={{ backgroundColor: "#F4F1F6" }} />
   ),
 });
 

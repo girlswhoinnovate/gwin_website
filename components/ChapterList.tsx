@@ -23,20 +23,20 @@ function ListItem({
       type="button"
       onClick={onSelect}
       onMouseEnter={onSelect}
-      className="relative flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left"
+      className="relative flex w-full items-center gap-3 px-3 py-2.5 text-left"
     >
       {/* Highlight slides between rows as the active location changes */}
       {active && (
         <motion.span
           layoutId="chapter-highlight"
-          className="absolute inset-0 rounded-2xl"
+          className="absolute inset-0"
           style={{ backgroundColor: "#F4F1F6" }}
           transition={hoverTransition}
         />
       )}
 
       <span
-        className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl"
+        className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center"
         style={{ backgroundColor: active ? "#FFFFFF" : "#F4F1F6", transition: colorTransition }}
       >
         <span className="relative h-6 w-6">
@@ -146,7 +146,7 @@ export default function ChapterList({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by school, city, or state"
-          className="w-full rounded-full py-3 pl-11 pr-4 text-sm outline-none ring-[#460C61]/30 transition-shadow placeholder:text-[#7A4A8A]/70 focus:ring-2"
+          className="w-full py-3 pl-11 pr-4 text-sm outline-none ring-[#460C61]/30 transition-shadow placeholder:text-[#7A4A8A]/70 focus:ring-2"
           style={{ backgroundColor: "#F4F1F6", color: "#1E293B" }}
         />
       </div>

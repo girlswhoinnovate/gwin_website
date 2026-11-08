@@ -157,7 +157,7 @@ export default function ProgramsSection() {
                         {/* Photo */}
                         {program.image && (
                           <motion.div
-                            className="relative aspect-[16/10] w-full overflow-hidden rounded-[24px]"
+                            className="relative aspect-[16/10] w-full overflow-hidden"
                             initial={{ scale: 0.96, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 0.7, ease, delay: 0.1 }}
