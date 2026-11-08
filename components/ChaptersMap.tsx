@@ -12,7 +12,7 @@ import {
 } from "react-simple-maps";
 import { locations, type ChapterLocation } from "@/lib/chapterLocations";
 import { PIN_PATH, DIAMOND_PATH, LocationIcon } from "@/lib/chapterIcons";
-import { HOVER_EASE_CSS, HOVER_MS, hoverTransition } from "@/lib/motion";
+import { HOVER_EASE, HOVER_EASE_CSS, HOVER_MS } from "@/lib/motion";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 const CENTER: [number, number] = [-96, 38.5];
@@ -50,49 +50,53 @@ const PIN_SCALE = 0.95;
 const PIN_TIP_X = 12 * PIN_SCALE;
 const PIN_TIP_Y = 21.9 * PIN_SCALE;
 
+// The tooltip eases in a touch slower than the pin grows, so it settles in
+// just after the pin rather than snapping up with it.
+const tooltipTransition = { duration: 0.55, ease: HOVER_EASE, delay: 0.05 };
+
 function Tooltip({
-  label,
-  sub,
+  location,
   zoom,
   offset,
   rectRef,
 }: {
-  label: string;
-  sub: string;
+  location: ChapterLocation;
   zoom: number;
   offset: { x: number; y: number };
   rectRef: React.RefObject<SVGRectElement | null>;
 }) {
-  const subText = sub.toUpperCase();
-  const width = Math.max(150, label.length * 9, subText.length * 7.4) + 32;
-  const height = 54;
+  // A flat, square-cornered tag set in the site's mono label style, joined to
+  // the pin by a thin leader line, rather than a floating rounded card.
+  const label = location.name.toUpperCase();
+  const sub = `${location.city}, ${location.state}`.toUpperCase();
+  // Mono text widths are estimated from character counts (SVG text can't be
+  // measured before render): ~0.6em per glyph plus letter-spacing.
+  const textWidth = Math.max(label.length * 7.3, sub.length * 6.5);
+  const padX = 12;
+  const width = textWidth + padX * 2;
+  const height = 42;
+  const left = -width / 2;
+  const leader = 10;
+  // The leader points at the pin even when the tag has been nudged inward
+  // from a map edge (the offset shifts the whole tooltip, so undo it here).
+  const leaderX = Math.min(Math.max(-offset.x, left + 1), left + width - 1);
   // counter-scale against the map's zoom so the tooltip never grows past its
   // size at the default zoom level, however far in the user zooms
   const scale = 1 / zoom;
+  const mono = { fontFamily: "var(--font-geist-mono), ui-monospace, monospace" };
   return (
     <g transform={`scale(${scale}) translate(${offset.x}, ${offset.y})`} style={{ pointerEvents: "none" }}>
-      <g transform={`translate(0, -${PIN_TIP_Y * ACTIVE_PIN_SCALE + 12})`}>
-        {/* Fades and rises in at the same pace as the list highlight */}
-        <motion.g
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={hoverTransition}
-          style={{ filter: "drop-shadow(0 4px 10px rgba(45, 8, 64, 0.18))" }}
-        >
-          <rect ref={rectRef} x={-width / 2} y={-height} width={width} height={height} rx={14} fill="#2D0840" />
-          <path d="M -7 -0.5 L 0 6.5 L 7 -0.5 Z" fill="#2D0840" />
-          <text textAnchor="middle" y={-30} fontSize={15} fontWeight={700} letterSpacing="-0.01em" fill="#FFFFFF">
+      <g transform={`translate(0, -${PIN_TIP_Y * ACTIVE_PIN_SCALE + leader})`}>
+        <motion.g initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={tooltipTransition}>
+          {offset.y <= 0 && (
+            <line x1={leaderX} y1={0} x2={leaderX} y2={leader - offset.y} stroke="#2D0840" strokeWidth={1} />
+          )}
+          <rect ref={rectRef} x={left} y={-height} width={width} height={height} fill="#2D0840" />
+          <text x={left + padX} y={-height + 17} fontSize={11} fontWeight={500} letterSpacing="0.06em" fill="#FFFFFF" style={mono}>
             {label}
           </text>
-          <text
-            textAnchor="middle"
-            y={-13}
-            fontSize={11}
-            letterSpacing="0.04em"
-            fill="#E2BDFF"
-            style={{ fontFamily: "var(--font-geist-mono), ui-monospace, monospace" }}
-          >
-            {subText}
+          <text x={left + padX} y={-height + 32} fontSize={10} letterSpacing="0.06em" fill="#E2BDFF" fillOpacity={0.75} style={mono}>
+            {sub}
           </text>
         </motion.g>
       </g>
@@ -301,8 +305,7 @@ export default function ChaptersMap({
             <Marker coordinates={activeLocation.coordinates} style={{ pointerEvents: "none" }}>
               <Tooltip
                 key={activeLocation.id}
-                label={activeLocation.name}
-                sub={`${activeLocation.city}, ${activeLocation.state}`}
+                location={activeLocation}
                 zoom={zoom}
                 offset={tooltipOffset}
                 rectRef={tooltipRectRef}

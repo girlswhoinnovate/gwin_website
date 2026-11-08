@@ -13,7 +13,7 @@ const programs = [
     title: "Summer Bootcamp",
     tags: ["Free", "2 weeks", "Grades 9–12"],
     description:
-      "A free online bootcamp that takes you from idea to a live pitch in front of real judges and investors.",
+      "A free online bootcamp that takes you from an idea to a live pitch in front of real judges and investors.",
     prizes: ["$500 1st", "$250 2nd", "$100 3rd"],
     status: "Summer 2027 applications opening soon",
     cta: "Stay tuned",
@@ -35,7 +35,7 @@ const programs = [
     title: "Online Network",
     tags: ["All ages", "Year-round"],
     description:
-      "Peers, mentors, and founders across 43+ schools — so you never have to build alone.",
+      "Mentors and founders across 43+ schools, so you never have to build alone.",
     cta: "Join the network",
     ctaHref: "https://discord.gg/HhHcCR8NYj",
   },
