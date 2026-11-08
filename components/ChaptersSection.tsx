@@ -36,13 +36,17 @@ export default function ChaptersSection() {
 
         {/* List + Map */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start rounded-[32px] bg-white p-4 md:p-8"
+          className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start md:items-stretch rounded-[32px] bg-white p-4 md:p-8"
           initial={{ opacity: 0, y: 28 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <div className="min-w-0 md:col-span-2">
-            <ChapterList activeId={activeId} setActiveId={setActiveId} />
+          {/* On desktop the list is taken out of flow so the map alone sets the
+              row height; the list then fills that height and scrolls inside it. */}
+          <div className="min-w-0 md:relative md:col-span-2">
+            <div className="md:absolute md:inset-0">
+              <ChapterList activeId={activeId} setActiveId={setActiveId} />
+            </div>
           </div>
           <div className="min-w-0 md:col-span-3">
             <ChaptersMap activeId={activeId} setActiveId={setActiveId} />

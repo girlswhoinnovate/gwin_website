@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import {
   ComposableMap,
   Geographies,
@@ -11,12 +12,14 @@ import {
 } from "react-simple-maps";
 import { locations, type ChapterLocation } from "@/lib/chapterLocations";
 import { PIN_PATH, DIAMOND_PATH, LocationIcon } from "@/lib/chapterIcons";
+import { HOVER_EASE_CSS, HOVER_MS, hoverTransition } from "@/lib/motion";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 const CENTER: [number, number] = [-96, 38.5];
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 5;
 const ZOOM_TRANSITION_MS = 400;
+const ACTIVE_PIN_SCALE = 1.25;
 
 function ZoomButton({
   onClick,
@@ -35,8 +38,8 @@ function ZoomButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
-      className="flex items-center justify-center w-9 h-9 rounded-full border shadow-sm transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
-      style={{ backgroundColor: "#FFFFFF", borderColor: "#E2BDFF", color: "#460C61" }}
+      className="flex h-9 w-9 items-center justify-center transition-colors hover:bg-[#F4F1F6] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-transparent"
+      style={{ color: "#460C61" }}
     >
       {children}
     </button>
@@ -60,31 +63,38 @@ function Tooltip({
   offset: { x: number; y: number };
   rectRef: React.RefObject<SVGRectElement | null>;
 }) {
-  const width = Math.max(160, label.length * 9.9 + 24);
-  const height = 53;
+  const subText = sub.toUpperCase();
+  const width = Math.max(150, label.length * 9, subText.length * 7.4) + 32;
+  const height = 54;
   // counter-scale against the map's zoom so the tooltip never grows past its
   // size at the default zoom level, however far in the user zooms
   const scale = 1 / zoom;
   return (
     <g transform={`scale(${scale}) translate(${offset.x}, ${offset.y})`} style={{ pointerEvents: "none" }}>
-      <g transform={`translate(0, -${PIN_TIP_Y + 14})`}>
-        <rect
-          ref={rectRef}
-          x={-width / 2}
-          y={-height}
-          width={width}
-          height={height}
-          rx={9}
-          fill="#2D0840"
-          stroke="#E2BDFF"
-          strokeWidth={1.25}
-        />
-        <text textAnchor="middle" y={-31} fontSize={16} fontWeight={700} fill="#FFFFFF">
-          {label}
-        </text>
-        <text textAnchor="middle" y={-12} fontSize={14} fill="#E2BDFF">
-          {sub}
-        </text>
+      <g transform={`translate(0, -${PIN_TIP_Y * ACTIVE_PIN_SCALE + 12})`}>
+        {/* Fades and rises in at the same pace as the list highlight */}
+        <motion.g
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={hoverTransition}
+          style={{ filter: "drop-shadow(0 4px 10px rgba(45, 8, 64, 0.18))" }}
+        >
+          <rect ref={rectRef} x={-width / 2} y={-height} width={width} height={height} rx={14} fill="#2D0840" />
+          <path d="M -7 -0.5 L 0 6.5 L 7 -0.5 Z" fill="#2D0840" />
+          <text textAnchor="middle" y={-30} fontSize={15} fontWeight={700} letterSpacing="-0.01em" fill="#FFFFFF">
+            {label}
+          </text>
+          <text
+            textAnchor="middle"
+            y={-13}
+            fontSize={11}
+            letterSpacing="0.04em"
+            fill="#E2BDFF"
+            style={{ fontFamily: "var(--font-geist-mono), ui-monospace, monospace" }}
+          >
+            {subText}
+          </text>
+        </motion.g>
       </g>
     </g>
   );
@@ -92,31 +102,30 @@ function Tooltip({
 
 export function LocationCard({ location }: { location: ChapterLocation }) {
   return (
-    <div
-      className="flex w-full items-start gap-3 rounded-xl border p-3"
-      style={{ borderColor: "#E2BDFF", backgroundColor: "#FFFFFF" }}
-    >
-      <span
-        className="relative mt-0.5 flex-shrink-0 w-8 h-8 flex items-center justify-center"
-        style={{ backgroundColor: "#FFFFFF" }}
-      >
-        {location.icon ? (
-          <Image
-            src={location.icon}
-            alt={`${location.school} logo`}
-            fill
-            className="object-contain"
-            style={{ transform: location.iconScale ? `scale(${location.iconScale})` : undefined }}
-          />
-        ) : (
-          <LocationIcon kind={location.kind} />
-        )}
+    <div className="flex w-full items-center gap-3 rounded-2xl bg-white px-3 py-2.5">
+      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl" style={{ backgroundColor: "#F4F1F6" }}>
+        <span className="relative h-6 w-6">
+          {location.icon ? (
+            <Image
+              src={location.icon}
+              alt={`${location.school} logo`}
+              fill
+              sizes="24px"
+              className="object-contain"
+              style={{ transform: location.iconScale ? `scale(${location.iconScale})` : undefined }}
+            />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center">
+              <LocationIcon kind={location.kind} />
+            </span>
+          )}
+        </span>
       </span>
       <div className="min-w-0">
-        <p className="text-sm font-semibold truncate" style={{ color: "#1E293B" }}>
+        <p className="truncate text-[15px] font-medium tracking-[-0.01em]" style={{ color: "#1E293B" }}>
           {location.school}
         </p>
-        <p className="text-xs" style={{ color: "#7A4A8A" }}>
+        <p className="mono-label mt-1 text-[11px]" style={{ color: "#7A4A8A" }}>
           {location.city}, {location.state}
         </p>
       </div>
@@ -170,7 +179,8 @@ export default function ChaptersMap({
     const ctm = rect.getScreenCTM();
     const scaleX = ctm?.a || 1;
     const scaleY = ctm?.d || 1;
-    const margin = 10;
+    // wide enough that the tooltip's drop shadow isn't clipped by the map edge
+    const margin = 18;
 
     const prevOffsetPxX = tooltipOffsetRef.current.x * scaleX;
     const prevOffsetPxY = tooltipOffsetRef.current.y * scaleY;
@@ -203,10 +213,7 @@ export default function ChaptersMap({
   const zoomOut = () => animateZoom((z) => Math.max(z / 1.5, MIN_ZOOM));
 
   return (
-    <div
-      className="relative w-full rounded-2xl border p-3 sm:p-5"
-      style={{ borderColor: "#E2BDFF", backgroundColor: "#F6EBFF" }}
-    >
+    <div className="relative w-full rounded-[24px] p-3 sm:p-5" style={{ backgroundColor: "#F4F1F6" }}>
       <ComposableMap
         ref={svgRef}
         projection="geoAlbersUsa"
@@ -219,7 +226,7 @@ export default function ChaptersMap({
           minZoom={MIN_ZOOM}
           maxZoom={MAX_ZOOM}
           style={{
-            transition: isZoomAnimating ? `transform ${ZOOM_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1)` : undefined,
+            transition: isZoomAnimating ? `transform ${ZOOM_TRANSITION_MS}ms ${HOVER_EASE_CSS}` : undefined,
           }}
           onMoveEnd={({ zoom: z }) => {
             if (z !== undefined) setZoom(z);
@@ -232,8 +239,8 @@ export default function ChaptersMap({
                   key={geo.rsmKey}
                   geography={geo}
                   fill="#FFFFFF"
-                  stroke="#D8B4FE"
-                  strokeWidth={0.75}
+                  stroke="#E6DCEE"
+                  strokeWidth={0.6}
                   style={{ outline: "none" }}
                 />
               ))
@@ -252,33 +259,38 @@ export default function ChaptersMap({
                 onClick={() => setActiveId((cur) => (cur === loc.id ? null : loc.id))}
                 style={{ cursor: "pointer" }}
               >
-                {isHub ? (
-                  <g transform={`${isActive ? "scale(1.2) " : ""}translate(0, -10)`}>
-                    {loc.icon ? (
-                      <image
-                        href={loc.icon}
-                        x={-11 * (loc.mapIconScale ?? 1)}
-                        y={-11 * (loc.mapIconScale ?? 1)}
-                        width={22 * (loc.mapIconScale ?? 1)}
-                        height={22 * (loc.mapIconScale ?? 1)}
-                        preserveAspectRatio="xMidYMid meet"
-                      />
-                    ) : (
-                      <>
-                        <path d={DIAMOND_PATH} fill="#FFFFFF" stroke="#460C61" strokeWidth={2} />
-                        <circle cx={0} cy={0} r={2.5} fill="#460C61" />
-                      </>
-                    )}
-                  </g>
-                ) : (
-                  <g
-                    transform={`${
-                      isActive ? "scale(1.2) " : ""
-                    }translate(${-PIN_TIP_X}, ${-PIN_TIP_Y}) scale(${PIN_SCALE})`}
-                  >
-                    <path d={PIN_PATH} fill="#460C61" stroke="#FFFFFF" strokeWidth={0.75} />
-                  </g>
-                )}
+                {/* Grows from the marker's anchor point (the pin tip), at the same
+                    pace as the list highlight */}
+                <g
+                  style={{
+                    transform: `scale(${isActive ? ACTIVE_PIN_SCALE : 1})`,
+                    transition: `transform ${HOVER_MS}ms ${HOVER_EASE_CSS}`,
+                  }}
+                >
+                  {isHub ? (
+                    <g transform="translate(0, -10)">
+                      {loc.icon ? (
+                        <image
+                          href={loc.icon}
+                          x={-11 * (loc.mapIconScale ?? 1)}
+                          y={-11 * (loc.mapIconScale ?? 1)}
+                          width={22 * (loc.mapIconScale ?? 1)}
+                          height={22 * (loc.mapIconScale ?? 1)}
+                          preserveAspectRatio="xMidYMid meet"
+                        />
+                      ) : (
+                        <>
+                          <path d={DIAMOND_PATH} fill="#FFFFFF" stroke="#460C61" strokeWidth={2} />
+                          <circle cx={0} cy={0} r={2.5} fill="#460C61" />
+                        </>
+                      )}
+                    </g>
+                  ) : (
+                    <g transform={`translate(${-PIN_TIP_X}, ${-PIN_TIP_Y}) scale(${PIN_SCALE})`}>
+                      <path d={PIN_PATH} fill="#460C61" stroke="#FFFFFF" strokeWidth={0.75} />
+                    </g>
+                  )}
+                </g>
               </Marker>
             );
           })}
@@ -288,6 +300,7 @@ export default function ChaptersMap({
           {activeLocation && (
             <Marker coordinates={activeLocation.coordinates} style={{ pointerEvents: "none" }}>
               <Tooltip
+                key={activeLocation.id}
                 label={activeLocation.name}
                 sub={`${activeLocation.city}, ${activeLocation.state}`}
                 zoom={zoom}
@@ -300,32 +313,33 @@ export default function ChaptersMap({
       </ComposableMap>
 
       {/* Zoom controls */}
-      <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 flex flex-col gap-2">
+      <div className="absolute bottom-4 right-4 flex flex-col overflow-hidden rounded-full bg-white shadow-[0_6px_20px_rgba(45,8,64,0.08)] sm:bottom-5 sm:right-5">
         <ZoomButton onClick={zoomIn} disabled={zoom >= MAX_ZOOM} label="Zoom in">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25}>
             <path strokeLinecap="round" d="M12 5v14M5 12h14" />
           </svg>
         </ZoomButton>
+        <span className="mx-2 h-px" style={{ backgroundColor: "#F4F1F6" }} />
         <ZoomButton onClick={zoomOut} disabled={zoom <= MIN_ZOOM} label="Zoom out">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25}>
             <path strokeLinecap="round" d="M5 12h14" />
           </svg>
         </ZoomButton>
       </div>
 
       {/* Legend */}
-      <div className="mt-3 flex flex-wrap items-center justify-center gap-6 text-xs font-medium" style={{ color: "#1E293B" }}>
-        <span className="inline-flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 24 24">
+      <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2 px-1" style={{ color: "#7A4A8A" }}>
+        <span className="mono-label inline-flex items-center gap-2 text-[11px]">
+          <svg width="12" height="12" viewBox="0 0 24 24">
             <path d={PIN_PATH} fill="#460C61" />
           </svg>
-          High School Chapter
+          High school chapter
         </span>
-        <span className="inline-flex items-center gap-2">
-          <svg width="14" height="14" viewBox="-10 -11 20 22">
+        <span className="mono-label inline-flex items-center gap-2 text-[11px]">
+          <svg width="12" height="12" viewBox="-10 -11 20 22">
             <path d={DIAMOND_PATH} fill="#FFFFFF" stroke="#460C61" strokeWidth={2} />
           </svg>
-          University Partner
+          University partner
         </span>
       </div>
     </div>
