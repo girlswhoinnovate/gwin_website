@@ -89,20 +89,34 @@ export default function ProgramsSection() {
                   <span className="mono-label hidden text-[11px] md:block" style={{ color: "#7A4A8A" }}>
                     {program.tags.join(" · ")}
                   </span>
-                  <motion.span
-                    className="flex h-10 w-10 items-center justify-center rounded-full border md:h-12 md:w-12"
-                    style={{ borderColor: "#E2BDFF", color: "#460C61" }}
-                    animate={{
-                      rotate: isOpen ? 45 : 0,
-                      backgroundColor: isOpen ? "#460C61" : "rgba(70,12,97,0)",
-                      color: isOpen ? "#FFFFFF" : "#460C61",
-                    }}
-                    transition={{ duration: 0.4, ease }}
-                  >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" d="M12 5v14M5 12h14" />
-                    </svg>
-                  </motion.span>
+                  {/* Diamond toggle: a square turned 45°. The diamond itself stays put and
+                      fills when open; only the icon inside turns, from "+" to "×". */}
+                  <span className="flex h-10 w-10 items-center justify-center md:h-12 md:w-12">
+                    <motion.span
+                      className="flex h-7 w-7 items-center justify-center border md:h-8 md:w-8"
+                      style={{ borderColor: "#E2BDFF", rotate: 45 }}
+                      animate={{
+                        backgroundColor: isOpen ? "#460C61" : "rgba(70,12,97,0)",
+                        borderColor: isOpen ? "#460C61" : "#E2BDFF",
+                        color: isOpen ? "#FFFFFF" : "#460C61",
+                      }}
+                      transition={{ duration: 0.4, ease }}
+                    >
+                      {/* -45° cancels the diamond's turn so "+" sits upright when closed */}
+                      <motion.svg
+                        className="h-3.5 w-3.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2.25}
+                        initial={false}
+                        animate={{ rotate: isOpen ? 0 : -45 }}
+                        transition={{ duration: 0.4, ease }}
+                      >
+                        <path strokeLinecap="round" d="M12 5v14M5 12h14" />
+                      </motion.svg>
+                    </motion.span>
+                  </span>
                 </button>
 
                 <AnimatePresence initial={false}>
